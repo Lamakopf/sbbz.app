@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>Lizenz – Lernapps & Games</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f6f8fc;
+      --card:#ffffff;
+      --ink:#0b1220;
+      --muted:#4b5563;
+      --line:#e6eaf2;
+      --shadow: 0 16px 38px rgba(15,23,42,.10);
+      --shadow2: 0 10px 22px rgba(15,23,42,.08);
+      --radius:18px;
+      --radius2:22px;
+      --max:980px;
+
+      --a1:#2bb0ff;
+      --a2:#7c5cff;
+      --a3:#ff4d7d;
+      --a4:#00c2d4;
+      --a5:#ff9a3c;
+      --a6:#22c55e;
+
+      --ease: cubic-bezier(.2,.8,.2,1);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background: var(--bg);
+      line-height:1.5;            /* besser lesbar */
+      overflow-x:hidden;
+    }
+
+    /* ===== Background bleibt ===== */
+    .bg{
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      overflow:hidden;
+      background: linear-gradient(180deg, #ffffff 0%, var(--bg) 55%, #ffffff 100%);
+    }
+    .blob{
+      position:absolute;
+      width: 58vmax;
+      height: 58vmax;
+      border-radius: 999px;
+      opacity:.56;
+      filter: blur(14px);
+      transform: translate3d(0,0,0);
+      will-change: transform;
+      animation:
+        driftA var(--t, 18s) linear infinite,
+        swirl  var(--s, 9s)  ease-in-out infinite;
+      mix-blend-mode:multiply;
+    }
+    .b1{ left:-18vmax; top:-22vmax; --t:14s; --s:7.5s;
+      background: radial-gradient(circle at 30% 30%,
+        rgba(43,176,255,.95) 0%,
+        rgba(43,176,255,.55) 30%,
+        rgba(43,176,255,.20) 52%,
+        transparent 72%);
+    }
+    .b2{ right:-22vmax; top:-16vmax; --t:16s; --s:8.5s;
+      background: radial-gradient(circle at 40% 40%,
+        rgba(124,92,255,.92) 0%,
+        rgba(124,92,255,.52) 32%,
+        rgba(124,92,255,.20) 54%,
+        transparent 74%);
+      animation-name: driftB, swirl;
+    }
+    .b3{ left:8vmax; bottom:-26vmax; --t:18s; --s:9.5s;
+      background: radial-gradient(circle at 40% 40%,
+        rgba(255,154,60,.92) 0%,
+        rgba(255,154,60,.52) 34%,
+        rgba(255,154,60,.20) 56%,
+        transparent 76%);
+      animation-name: driftC, swirl;
+    }
+    .b4{ right:10vmax; bottom:-24vmax; --t:20s; --s:10.5s;
+      background: radial-gradient(circle at 40% 40%,
+        rgba(0,194,212,.90) 0%,
+        rgba(0,194,212,.48) 34%,
+        rgba(0,194,212,.18) 56%,
+        transparent 76%);
+      animation-name: driftD, swirl;
+    }
+
+    @keyframes driftA{0%{transform:translate3d(0,0,0)}20%{transform:translate3d(7%,4%,0)}45%{transform:translate3d(3%,-6%,0)}70%{transform:translate3d(-6%,2%,0)}100%{transform:translate3d(0,0,0)}}
+    @keyframes driftB{0%{transform:translate3d(0,0,0)}18%{transform:translate3d(-8%,5%,0)}44%{transform:translate3d(-2%,-7%,0)}73%{transform:translate3d(6%,1%,0)}100%{transform:translate3d(0,0,0)}}
+    @keyframes driftC{0%{transform:translate3d(0,0,0)}22%{transform:translate3d(6%,-5%,0)}48%{transform:translate3d(-7%,-1%,0)}76%{transform:translate3d(2%,7%,0)}100%{transform:translate3d(0,0,0)}}
+    @keyframes driftD{0%{transform:translate3d(0,0,0)}16%{transform:translate3d(5%,-6%,0)}42%{transform:translate3d(-6%,-2%,0)}68%{transform:translate3d(-1%,7%,0)}100%{transform:translate3d(0,0,0)}}
+    @keyframes swirl{0%{rotate:0deg; scale:1}35%{rotate:10deg; scale:1.04}70%{rotate:-8deg; scale:.98}100%{rotate:0deg; scale:1}}
+
+    .noise{
+      position:absolute; inset:0;
+      opacity:.06;
+      mix-blend-mode: multiply;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+    }
+
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:var(--max); margin:0 auto; padding:22px 16px 70px;}
+
+    /* ===== Topbar bleibt, nur etwas luftiger ===== */
+    .top{
+      position:sticky; top:12px; z-index:50;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:12px 12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.84);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow2);
+      backdrop-filter: blur(10px);
+    }
+    .brand{display:flex; align-items:center; gap:10px; min-width:0}
+    .logo{
+      width:38px; height:38px; border-radius:14px;
+      display:grid; place-items:center;
+      border:1px solid var(--line);
+      background:
+        radial-gradient(16px 16px at 30% 30%, rgba(43,176,255,.35), transparent 60%),
+        radial-gradient(18px 18px at 70% 70%, rgba(124,92,255,.28), transparent 60%),
+        #fff;
+      box-shadow: 0 10px 22px rgba(15,23,42,.06);
+      font-size:16px;
+    }
+    .brandText{display:flex; flex-direction:column; gap:2px; min-width:0}
+    .brandTitle{margin:0;font-weight:950;letter-spacing:-.02em;font-size:14px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .brandSub{margin:0;color:var(--muted);font-weight:750;font-size:12px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+    .btnRow{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end}
+    .btn{
+      appearance:none;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--ink);
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:900;
+      cursor:pointer;
+      transition: transform .12s var(--ease), border-color .18s var(--ease);
+      user-select:none;
+      display:inline-flex; align-items:center; gap:10px;
+      white-space:nowrap;
+      box-shadow: 0 8px 18px rgba(15,23,42,.06);
+    }
+    .btn:hover{transform: translateY(-2px); border-color:#d6dbea;}
+    .btn:active{transform: translateY(0px);}
+    .btn:disabled{opacity:.55; cursor:not-allowed; transform:none;}
+    .btnIcon{
+      width:28px; height:28px; border-radius:10px;
+      display:grid; place-items:center;
+      background: rgba(15,23,42,.06);
+      font-size:16px;
+    }
+    .btnPrimary{
+      border-color: rgba(43,176,255,.28);
+      background: linear-gradient(180deg, rgba(43,176,255,.16), rgba(124,92,255,.10));
+    }
+
+    /* ===== Hero / Hauptkarte ===== */
+    .hero{
+      margin-top:18px;
+      padding:22px;
+      border-radius: calc(var(--radius2) + 4px);
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .kicker{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      width:fit-content;
+      font-weight:950;
+      font-size:13px;
+    }
+    .kdot{
+      width:10px; height:10px; border-radius:999px;
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      box-shadow: 0 0 0 4px rgba(43,176,255,.12);
+    }
+
+    h1{
+      margin:12px 0 0 0;
+      font-size: clamp(26px, 3.2vw, 40px);
+      line-height:1.1;
+      letter-spacing:-.03em;
+      font-weight:950;
+      max-width: 34ch;
+    }
+    .lead{
+      margin:10px 0 0 0;
+      color:var(--muted);
+      font-weight:750;
+      font-size:15px; /* etwas größer */
+      max-width: 78ch;
+    }
+
+    .card{
+      margin-top:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius: calc(var(--radius2) + 2px);
+      box-shadow: var(--shadow2);
+      padding:16px;
+      overflow:hidden;
+    }
+
+    .sectionTitle{
+      margin:0 0 10px 0;
+      font-weight:950;
+      letter-spacing:-.01em;
+      font-size:16px;
+    }
+
+    /* ===== Progress: weniger Kleinteile, besser lesbar ===== */
+    .progress{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background: rgba(246,248,252,.55);
+    }
+    .keys{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+    .key{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:8px 10px;
+      font-weight:950;
+      font-size:12px;
+      color:var(--muted);
+      box-shadow: 0 8px 18px rgba(15,23,42,.05);
+    }
+    .key.on{border-color: rgba(34,197,94,.30); background: linear-gradient(180deg, rgba(34,197,94,.12), rgba(34,197,94,.06)); color:#0b1220;}
+    .meter{
+      font-weight:950; font-size:12px; color:var(--muted);
+      display:flex; align-items:center; gap:10px; white-space:nowrap;
+    }
+    .bar{
+      width:170px; height:10px; border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      overflow:hidden;
+      box-shadow: inset 0 1px 0 rgba(15,23,42,.04);
+    }
+    .bar > i{
+      display:block; height:100%; width:0%;
+      background: linear-gradient(90deg, rgba(43,176,255,.65), rgba(124,92,255,.65));
+      transition: width .35s var(--ease);
+    }
+
+    /* ===== Szene: klarer / größer / weniger Rahmen ===== */
+    .scene{
+      margin-top:12px;
+      border:1px solid var(--line);
+      border-radius: 18px;
+      background:#fff;
+      box-shadow: 0 8px 18px rgba(15,23,42,.05);
+      overflow:hidden;
+    }
+    .sceneTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:12px;
+      border-bottom:1px solid var(--line);
+      background: #fbfcff;
+    }
+    .sceneTitle{margin:0; font-weight:950; font-size:13px; letter-spacing:-.01em;}
+    .seal{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:6px 10px;
+      font-weight:950;
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+
+    .sceneBody{padding:12px;}
+    .dialog{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      padding:12px;
+      background: rgba(246,248,252,.55);
+    }
+    .dialog strong{font-weight:950}
+    .dialog p{
+      margin:6px 0 0 0;
+      color:var(--muted);
+      font-weight:750;
+      font-size:14px;
+      line-height:1.55;
+    }
+
+    /* Choices: NICHT mehr „wild im Wrap“, sondern sauber gestapelt */
+    .choices{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+    .choiceBtn{
+      width:100%;
+      text-align:left;
+      padding:12px 12px;
+      border-radius:16px;
+    }
+    .choiceBtn small{
+      display:block;
+      margin-top:6px;
+      color:var(--muted);
+      font-weight:750;
+      font-size:12px;
+      line-height:1.4;
+    }
+
+    /* Feedback */
+    .toast{
+      margin-top:12px;
+      display:none;
+      border:1px solid var(--line);
+      border-radius: 16px;
+      padding:10px 12px;
+      background:#fff;
+      font-weight:850;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .toast.show{display:block;}
+    .toast.ok{border-color: rgba(34,197,94,.28); background: linear-gradient(180deg, rgba(34,197,94,.10), rgba(34,197,94,.05)); color:#0b1220;}
+    .toast.no{border-color: rgba(255,77,125,.28); background: linear-gradient(180deg, rgba(255,77,125,.10), rgba(255,77,125,.05)); color:#0b1220;}
+    .toast.warn{border-color: rgba(255,154,60,.28); background: linear-gradient(180deg, rgba(255,154,60,.10), rgba(255,154,60,.05)); color:#0b1220;}
+
+    /* Ergebnis: klarer Block */
+    .result{
+      margin-top:12px;
+      border:1px solid var(--line);
+      border-radius: 18px;
+      padding:12px;
+      background: rgba(246,248,252,.55);
+    }
+    .resultHead{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-bottom:8px;
+    }
+    .resultHead strong{font-weight:950; font-size:13px;}
+
+    .pillRow{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .pill{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:7px 10px;
+      font-weight:900;
+      font-size:12px;
+      color:var(--muted);
+      display:inline-flex; align-items:center; gap:8px;
+      box-shadow: 0 8px 18px rgba(15,23,42,.05);
+    }
+    .pill.good{border-color: rgba(34,197,94,.25); background: linear-gradient(180deg, rgba(34,197,94,.10), rgba(34,197,94,.06)); color:#0b1220;}
+    .pill.bad{border-color: rgba(255,77,125,.25); background: linear-gradient(180deg, rgba(255,77,125,.10), rgba(255,77,125,.06)); color:#0b1220;}
+    .pill.warn{border-color: rgba(255,154,60,.30); background: linear-gradient(180deg, rgba(255,154,60,.10), rgba(255,154,60,.06)); color:#0b1220;}
+
+    .codebox{
+      margin-top:10px;
+      border:1px dashed #d6dbea;
+      border-radius: 18px;
+      padding:12px;
+      background: #fbfcff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size:12px;
+      line-height:1.5;
+      color:#0b1220;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+
+    footer{
+      margin-top:14px;
+      border:1px solid var(--line);
+      border-radius: calc(var(--radius2) + 2px);
+      background: rgba(255,255,255,.78);
+      box-shadow: var(--shadow2);
+      padding:16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .footLeft{
+      display:flex; flex-direction:column; gap:6px;
+      color:var(--muted);
+      font-weight:750;
+      font-size:12px;
+      max-width: 80ch;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none !important; transition:none !important;}
+      .bg{background: linear-gradient(180deg, #fff 0%, var(--bg) 60%, #fff 100%);}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+    <div class="blob b4"></div>
+    <div class="noise"></div>
+  </div>
+
+  <div class="wrap">
+    <header class="top">
+      <div class="brand" title="Lernapps & Games – Lizenz">
+        <div class="logo">🧩</div>
+        <div class="brandText">
+          <p class="brandTitle">Lernapps & Games</p>
+          <p class="brandSub">Lizenz – Mini-Quiz</p>
+        </div>
+      </div>
+      <div class="btnRow">
+        <a class="btn" href="index.html"><span class="btnIcon">⬅️</span>Zurück</a>
+        <button class="btn" id="reset" type="button"><span class="btnIcon">🔄</span>Neu</button>
+        <button class="btn btnPrimary" id="copyAttributionTop" type="button" disabled>
+          <span class="btnIcon">📋</span>Attribution
+        </button>
+      </div>
+    </header>
+
+    <section class="hero" aria-label="Lizenz Quiz">
+      <div class="kicker"><span class="kdot"></span> Quiz: „Was deckt die Lizenz ab?“</div>
+      <h1>Du brauchst 4/4 Treffer: BY, NC, SA, Klartext.</h1>
+      <p class="lead">
+        Vier kurze Situationen. Du klickst die richtige Aussage. Am Ende bekommst du einen
+        fertigen Copy-Text (Attribution) und ein kleines „Zertifikat“.
+      </p>
+
+      <div class="card">
+        <h2 class="sectionTitle">Quiz-Status</h2>
+
+        <div class="progress" role="status" aria-live="polite">
+          <div class="keys" id="keys">
+            <span class="key" id="k_by">🔑 BY</span>
+            <span class="key" id="k_nc">🔑 NC</span>
+            <span class="key" id="k_sa">🔑 SA</span>
+            <span class="key" id="k_note">🧠 Klartext</span>
+          </div>
+          <div class="meter">
+            <span id="meterText">0/4</span>
+            <span class="bar" aria-hidden="true"><i id="barFill"></i></span>
+          </div>
+        </div>
+
+        <div class="scene" aria-label="Szene">
+          <div class="sceneTop">
+            <p class="sceneTitle" id="sceneTitle">Szene 1/4</p>
+            <span class="seal" id="sceneSeal">🔒</span>
+          </div>
+          <div class="sceneBody">
+            <div class="dialog">
+              <strong id="npcName">…</strong>
+              <p id="sceneText">…</p>
+            </div>
+
+            <div class="choices" id="choices"></div>
+            <div class="toast" id="toast"></div>
+          </div>
+        </div>
+
+        <div class="result" id="resultBox" style="display:none;">
+          <div class="resultHead">
+            <strong>✅ Freigeschaltet</strong>
+            <span class="seal">🎓 Offen</span>
+          </div>
+
+          <div class="pillRow">
+            <span class="pill good">✅ Unterricht / privat</span>
+            <span class="pill good">✅ Teilen (mit Quelle)</span>
+            <span class="pill warn">↩️ Änderungen: gleiche Lizenz</span>
+            <span class="pill bad">❌ Kommerziell</span>
+          </div>
+
+          <div class="codebox" id="certText"></div>
+
+          <div class="pillRow">
+            <button class="btn btnPrimary" id="copyCert" type="button"><span class="btnIcon">📋</span>Zertifikat</button>
+            <button class="btn" id="copyAttrib2" type="button"><span class="btnIcon">🔗</span>Attribution</button>
+          </div>
+
+          <div class="codebox" id="attribBox"></div>
+
+          <div class="dialog" style="margin-top:12px;">
+            <strong>Klartext</strong>
+            <p id="klartext">
+              Du darfst die Apps im Unterricht nutzen, kostenlos teilen und für Schule anpassen.
+              Du musst die Quelle nennen (Name + Link).
+              Du darfst sie nicht verkaufen oder kommerziell verwenden.
+              Wenn du Änderungen veröffentlichst, dann wieder unter denselben Bedingungen (SA).
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <footer>
+        <div class="footLeft">
+          <div><strong style="color:var(--ink); font-weight:950;">Merksatz:</strong> Nutzen & teilen geht, wenn du die Quelle nennst. Verkaufen geht nicht. Veröffentlichte Änderungen bleiben wieder offen (SA).</div>
+          <div>Hinweis: Vereinfachte Erklärung, keine Rechtsberatung.</div>
+        </div>
+        <div class="btnRow">
+          <a class="btn" href="about.html"><span class="btnIcon">ℹ️</span>Über</a>
+          <a class="btn" href="support.html"><span class="btnIcon">☕</span>Support</a>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <script>
+    // =========================
+    // Minimaler Quiz-Controller
+    // =========================
+
+    // === anpassen ===
+    const PROJECT_NAME = "Lernapps & Games – SBBZ-Differenzierung";
+    const AUTHOR_NAME  = "[DEIN NAME]";          // <-- hier anpassen
+    const LICENSE_NAME = "CC BY-NC-SA";          // <-- hier anpassen
+
+    const BASE_URL = (() => {
+      try { return location.href; }
+      catch(e) { return "[DEINE URL]"; }
+    })();
+
+    const state = {
+      sceneIndex: 0,
+      unlock: { by:false, nc:false, sa:false, note:false }
+    };
+
+    const SCENES = [
+      {
+        key: "by",
+        title: "Die Tür der Nutzung",
+        npc: "Szenario:",
+        text: "Du nutzt die App im Unterricht. Was ist die eine Sache, die du immer tun solltest?",
+        correct: 0,
+        options: [
+          { icon:"✅", label:"Ich nenne die Quelle (Name + Link)."},
+          { icon:"❌", label:"Ich schreibe nichts dazu, ist ja kostenlos."},
+          { icon:"🤫", label:"Ich behaupte, ich hätte es selbst gemacht."}
+        ]
+      },
+      {
+        key: "nc",
+        title: "Der Marktstand",
+        npc: "Szenario:",
+        text: "Ich finde die Apps super und sehe darin eine tolle Möglichkeit, um Geld zu verdienen.",
+        correct: 0,
+        options: [
+          { icon:"💶", label:"Klar, verdien Geld damit, aber nenne ich nenne dich als Quelle."},
+          { icon:"❌", label:"Nein. Verkaufen ist nicht erlaubt."},          
+          { icon:"⚠️", label:"Nur wenn es „für einen guten Zweck“ ist."}
+        ]
+      },
+      {
+        key: "sa",
+        title: "Die Werkbank",
+        npc: "Szenario:",
+        text: "Du hast die App verbessert und willst sie öffentlich teilen. Welche Regel gilt dann?",
+        correct: 0,
+        options: [
+          { icon:"🚫", label:"Ich setze eine strengere Lizenz drauf."},
+          { icon:"🧺", label:"Ich darf sie nicht teilen."},
+          { icon:"↩️", label:"Ich teile wieder unter gleichen Bedingungen."}         
+        ]
+      },
+      {
+        key: "note",
+        title: "Der Klartext-Spiegel",
+        npc: "Szenario:",
+        text: "Sag es in einem Satz: Was ist das Wichtigste an dieser Lizenz?",
+        correct: 0,
+        options: [
+          { icon:"🎓", label:"Kostenlos nutzen + Quelle nennen + nicht verkaufen + Änderungen wieder offen teilen."},
+          { icon:"📦", label:"Ich darf alles, weil es kostenlos ist."},
+          { icon:"🧾", label:"Ich brauche 10 Absätze Jura-Text."}
+        ]
+      }
+    ];
+
+    // --- DOM ---
+    const el = {
+      k_by:  document.getElementById("k_by"),
+      k_nc:  document.getElementById("k_nc"),
+      k_sa:  document.getElementById("k_sa"),
+      k_note:document.getElementById("k_note"),
+      meterText: document.getElementById("meterText"),
+      barFill: document.getElementById("barFill"),
+
+      sceneTitle: document.getElementById("sceneTitle"),
+      sceneSeal: document.getElementById("sceneSeal"),
+      npcName: document.getElementById("npcName"),
+      sceneText: document.getElementById("sceneText"),
+      choices: document.getElementById("choices"),
+      toast: document.getElementById("toast"),
+
+      resultBox: document.getElementById("resultBox"),
+      certText: document.getElementById("certText"),
+      attribBox: document.getElementById("attribBox"),
+
+      reset: document.getElementById("reset"),
+      copyAttributionTop: document.getElementById("copyAttributionTop"),
+      copyCert: document.getElementById("copyCert"),
+      copyAttrib2: document.getElementById("copyAttrib2"),
+    };
+
+    function unlockedCount(){
+      return Object.values(state.unlock).filter(Boolean).length;
+    }
+
+    function allUnlocked(){
+      return state.unlock.by && state.unlock.nc && state.unlock.sa && state.unlock.note;
+    }
+
+    function toast(kind, msg){
+      el.toast.className = "toast show " + kind;
+      el.toast.textContent = msg;
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => {
+        el.toast.className = "toast";
+        el.toast.textContent = "";
+      }, 1600);
+    }
+
+    function certificateText(){
+      return `🎓 Lizenz-Zertifikat
+
+Projekt: ${PROJECT_NAME}
+Autor: ${AUTHOR_NAME}
+Lizenz: ${LICENSE_NAME}
+
+Erlaubt:
+- im Unterricht nutzen
+- kostenlos teilen (mit Quelle)
+- anpassen
+
+Pflicht:
+- Quelle nennen (Name + Link)
+
+Nicht erlaubt:
+- verkaufen / kommerziell
+
+Wenn du Änderungen veröffentlichst:
+- gleiche Lizenz (SA)
+
+Hinweis: Vereinfachte Erklärung (keine Rechtsberatung).`;
+    }
+
+    function attributionText(){
+      return `"${PROJECT_NAME}" von ${AUTHOR_NAME}, Lizenz: ${LICENSE_NAME}.
+Quelle: ${BASE_URL}
+(Änderungen: ja/nein)`;
+    }
+
+    function render(){
+      const s = SCENES[state.sceneIndex];
+
+      // Progress
+      const c = unlockedCount();
+      el.meterText.textContent = `${c}/4`;
+      el.barFill.style.width = (c/4*100) + "%";
+
+      el.k_by.classList.toggle("on", state.unlock.by);
+      el.k_nc.classList.toggle("on", state.unlock.nc);
+      el.k_sa.classList.toggle("on", state.unlock.sa);
+      el.k_note.classList.toggle("on", state.unlock.note);
+
+      // Scene header
+      el.sceneTitle.textContent = `Szene ${state.sceneIndex + 1}/4 – ${s.title}`;
+      const got = state.unlock[s.key];
+      el.sceneSeal.textContent = got ? "✅ geschafft" : "🔒 offen";
+
+      // Scene content
+      el.npcName.textContent = s.npc + ":";
+      el.sceneText.textContent = s.text;
+
+      // Options
+      el.choices.innerHTML = "";
+      s.options.forEach((opt, idx) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn choiceBtn";
+        b.innerHTML = `<span class="btnIcon">${opt.icon}</span>${opt.label}<small>${opt.sub || ""}</small>`;
+        b.addEventListener("click", () => pick(idx));
+        el.choices.appendChild(b);
+      });
+
+      // Result unlocked?
+      if(allUnlocked()){
+        el.resultBox.style.display = "block";
+        el.copyAttributionTop.disabled = false;
+        el.certText.textContent = certificateText();
+        el.attribBox.textContent = attributionText();
+      }else{
+        el.resultBox.style.display = "none";
+        el.copyAttributionTop.disabled = true;
+      }
+    }
+
+    function pick(idx){
+      const s = SCENES[state.sceneIndex];
+
+      // Sonderfall: „intern teilen“ bei SA-Szene -> nur Hinweis, kein Weiter
+      if(s.key === "sa" && idx === 2){
+        toast("warn", "Intern ist ok – aber fürs öffentliche Teilen gilt SA (gleiche Lizenz).");
+        return;
+      }
+
+      if(idx === s.correct){
+        state.unlock[s.key] = true;
+
+        const msgMap = {
+          by:   "🔑 BY: Quelle nennen.",
+          nc:   "🔑 NC: nicht verkaufen.",
+          sa:   "🔑 SA: gleiche Lizenz beim Veröffentlichen.",
+          note: "🧠 Klartext sitzt."
+        };
+        toast("ok", msgMap[s.key] || "✅ Richtig.");
+
+        // weiter
+        if(state.sceneIndex < 3) state.sceneIndex++;
+      }else{
+        const noMap = {
+          by:   "Nein: BY heißt „Quelle nennen“.",
+          nc:   "Nein: NC heißt „nicht kommerziell“.",
+          sa:   "Nein: SA verlangt „gleich“.",
+          note: "Nein: kostenlos ≠ beliebig."
+        };
+        toast("no", noMap[s.key] || "Nein.");
+      }
+
+      render();
+    }
+
+    async function copyText(txt){
+      try{
+        await navigator.clipboard.writeText(txt);
+        return true;
+      }catch(e){
+        return false;
+      }
+    }
+
+    // Buttons
+    el.reset.addEventListener("click", () => {
+      state.sceneIndex = 0;
+      state.unlock.by = state.unlock.nc = state.unlock.sa = state.unlock.note = false;
+      render();
+    });
+
+    el.copyAttributionTop.addEventListener("click", async () => {
+      const ok = await copyText(attributionText());
+      if(ok){
+        el.copyAttributionTop.innerHTML = '<span class="btnIcon">✅</span>Kopiert';
+        setTimeout(()=> el.copyAttributionTop.innerHTML = '<span class="btnIcon">📋</span>Attribution', 900);
+      }else{
+        alert("Kopieren hat nicht geklappt. Bitte Text unten manuell kopieren.");
+      }
+    });
+
+    el.copyCert.addEventListener("click", async () => {
+      const ok = await copyText(certificateText());
+      if(ok){
+        el.copyCert.innerHTML = '<span class="btnIcon">✅</span>Kopiert';
+        setTimeout(()=> el.copyCert.innerHTML = '<span class="btnIcon">📋</span>Zertifikat', 900);
+      }else{
+        alert("Kopieren hat nicht geklappt. Bitte Text im Kasten manuell kopieren.");
+      }
+    });
+
+    el.copyAttrib2.addEventListener("click", async () => {
+      const ok = await copyText(attributionText());
+      if(ok){
+        el.copyAttrib2.innerHTML = '<span class="btnIcon">✅</span>Kopiert';
+        setTimeout(()=> el.copyAttrib2.innerHTML = '<span class="btnIcon">🔗</span>Attribution', 900);
+      }else{
+        alert("Kopieren hat nicht geklappt. Bitte Text im Kasten manuell kopieren.");
+      }
+    });
+
+    // Init
+    render();
+  </script>
+</body>
+</html>
