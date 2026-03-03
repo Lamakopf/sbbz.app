@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nomen-Quiz 📚</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .word-display {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .word {
+            font-size: 3em;
+            font-weight: bold;
+            color: #333;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            display: inline-block;
+            min-width: 200px;
+        }
+
+        .question {
+            text-align: center;
+            font-size: 1.5em;
+            color: #555;
+            margin: 30px 0 20px 0;
+            font-weight: 600;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-yes {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-no {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-article {
+            background: #2196F3;
+            color: white;
+            min-width: 100px;
+        }
+
+        .btn-category {
+            background: #FF9800;
+            color: white;
+            min-width: 120px;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 2em;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .feedback.correct {
+            color: #4CAF50;
+        }
+
+        .feedback.wrong {
+            color: #f44336;
+        }
+
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: 50%;
+            left: 50%;
+            opacity: 1;
+        }
+
+        @keyframes confetti-burst {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .final-screen {
+            text-align: center;
+        }
+
+        .final-screen h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .final-score {
+            font-size: 3em;
+            color: #4CAF50;
+            margin: 30px 0;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            font-size: 1.3em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="confetti-container" id="confetti-container"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>📚 Nomen-Quiz</h1>
+            <div class="score">Punkte: <span id="score">0</span></div>
+        </div>
+
+        <div id="game-area">
+            <div class="word-display">
+                <div class="word" id="current-word">Start</div>
+            </div>
+
+            <div id="step1" class="step active">
+                <div class="question">Ist das ein Nomen? 🤔</div>
+                <div class="button-group">
+                    <button class="btn btn-yes" onclick="checkNoun(true)">✅ Ja</button>
+                    <button class="btn btn-no" onclick="checkNoun(false)">❌ Nein</button>
+                </div>
+            </div>
+
+            <div id="step2" class="step">
+                <div class="question">Welcher Begleiter passt? 📝</div>
+                <div class="button-group">
+                    <button class="btn btn-article" onclick="checkArticle('der')">der</button>
+                    <button class="btn btn-article" onclick="checkArticle('die')">die</button>
+                    <button class="btn btn-article" onclick="checkArticle('das')">das</button>
+                </div>
+            </div>
+
+            <div id="step3" class="step">
+                <div class="question">In welche Kategorie gehört es? 🏷️</div>
+                <div class="button-group">
+                    <button class="btn btn-category" onclick="checkCategory('Tier')">🐾 Tier</button>
+                    <button class="btn btn-category" onclick="checkCategory('Mensch')">👤 Mensch</button>
+                    <button class="btn btn-category" onclick="checkCategory('Pflanze')">🌱 Pflanze</button>
+                    <button class="btn btn-category" onclick="checkCategory('Ding')">📦 Ding</button>
+                </div>
+            </div>
+
+            <div id="feedback" class="feedback"></div>
+        </div>
+
+        <div id="final-screen" class="final-screen" style="display: none;">
+            <h2>🎉 Super gemacht! 🎉</h2>
+            <div class="final-score"><span id="final-score">0</span> Punkte</div>
+            <p style="font-size: 1.3em; color: #555;">Du hast alle Wörter geschafft!</p>
+            <button class="btn btn-restart" onclick="location.reload()">🔄 Nochmal spielen</button>
+        </div>
+    </div>
+
+    <script>
+        const words = [
+            // Nomen
+            {word: "Hund", isNoun: true, article: "der", category: "Tier"},
+            {word: "Katze", isNoun: true, article: "die", category: "Tier"},
+            {word: "Baum", isNoun: true, article: "der", category: "Pflanze"},
+            {word: "Blume", isNoun: true, article: "die", category: "Pflanze"},
+            {word: "Tisch", isNoun: true, article: "der", category: "Ding"},
+            {word: "Stuhl", isNoun: true, article: "der", category: "Ding"},
+            {word: "Lehrer", isNoun: true, article: "der", category: "Mensch"},
+            {word: "Mutter", isNoun: true, article: "die", category: "Mensch"},
+            {word: "Pferd", isNoun: true, article: "das", category: "Tier"},
+            {word: "Vogel", isNoun: true, article: "der", category: "Tier"},
+            {word: "Rose", isNoun: true, article: "die", category: "Pflanze"},
+            {word: "Gras", isNoun: true, article: "das", category: "Pflanze"},
+            {word: "Buch", isNoun: true, article: "das", category: "Ding"},
+            {word: "Stift", isNoun: true, article: "der", category: "Ding"},
+            {word: "Kind", isNoun: true, article: "das", category: "Mensch"},
+            {word: "Vater", isNoun: true, article: "der", category: "Mensch"},
+            {word: "Maus", isNoun: true, article: "die", category: "Tier"},
+            {word: "Fisch", isNoun: true, article: "der", category: "Tier"},
+            {word: "Apfel", isNoun: true, article: "der", category: "Pflanze"},
+            {word: "Birne", isNoun: true, article: "die", category: "Pflanze"},
+            {word: "Auto", isNoun: true, article: "das", category: "Ding"},
+            {word: "Ball", isNoun: true, article: "der", category: "Ding"},
+            {word: "Bruder", isNoun: true, article: "der", category: "Mensch"},
+            {word: "Schwester", isNoun: true, article: "die", category: "Mensch"},
+            {word: "Hase", isNoun: true, article: "der", category: "Tier"},
+            {word: "Schaf", isNoun: true, article: "das", category: "Tier"},
+            {word: "Tulpe", isNoun: true, article: "die", category: "Pflanze"},
+            {word: "Strauch", isNoun: true, article: "der", category: "Pflanze"},
+            {word: "Haus", isNoun: true, article: "das", category: "Ding"},
+            {word: "Tür", isNoun: true, article: "die", category: "Ding"},
+            {word: "Oma", isNoun: true, article: "die", category: "Mensch"},
+            {word: "Opa", isNoun: true, article: "der", category: "Mensch"},
+            {word: "Kuh", isNoun: true, article: "die", category: "Tier"},
+            {word: "Schwein", isNoun: true, article: "das", category: "Tier"},
+            {word: "Tanne", isNoun: true, article: "die", category: "Pflanze"},
+            {word: "Pilz", isNoun: true, article: "der", category: "Pflanze"},
+            {word: "Fenster", isNoun: true, article: "das", category: "Ding"},
+            {word: "Lampe", isNoun: true, article: "die", category: "Ding"},
+            
+            // Verben und Adjektive (keine Nomen)
+            {word: "laufen", isNoun: false},
+            {word: "springen", isNoun: false},
+            {word: "schön", isNoun: false},
+            {word: "groß", isNoun: false},
+            {word: "spielen", isNoun: false},
+            {word: "schnell", isNoun: false},
+            {word: "singen", isNoun: false},
+            {word: "klein", isNoun: false},
+            {word: "tanzen", isNoun: false},
+            {word: "bunt", isNoun: false},
+            {word: "lesen", isNoun: false},
+            {word: "lustig", isNoun: false}
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let currentWord = null;
+        let wrongWords = [];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        let shuffledWords = shuffleArray([...words]);
+
+        function showWord() {
+            if (currentIndex >= shuffledWords.length) {
+                if (wrongWords.length > 0) {
+                    shuffledWords = shuffleArray([...wrongWords]);
+                    wrongWords = [];
+                    currentIndex = 0;
+                } else {
+                    showFinalScreen();
+                    return;
+                }
+            }
+
+            currentWord = shuffledWords[currentIndex];
+            document.getElementById('current-word').textContent = currentWord.word;
+            showStep(1);
+            document.getElementById('feedback').textContent = '';
+        }
+
+        function showStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById('step' + stepNumber).classList.add('active');
+        }
+
+        function checkNoun(answer) {
+            if (answer === currentWord.isNoun) {
+                if (currentWord.isNoun) {
+                    showFeedback('✅ Richtig!', true);
+                    setTimeout(() => showStep(2), 800);
+                } else {
+                    showFeedback('✅ Richtig! Das ist kein Nomen!', true);
+                    score += 3;
+                    updateScore();
+                    createConfetti();
+                    setTimeout(() => nextWord(), 1500);
+                }
+            } else {
+                showFeedback('❌ Nicht ganz...', false);
+                wrongWords.push(currentWord);
+                setTimeout(() => nextWord(), 1500);
+            }
+        }
+
+        function checkArticle(answer) {
+            if (answer === currentWord.article) {
+                showFeedback('✅ Super!', true);
+                setTimeout(() => showStep(3), 800);
+            } else {
+                showFeedback('❌ Leider falsch... Es heißt: ' + currentWord.article, false);
+                wrongWords.push(currentWord);
+                setTimeout(() => nextWord(), 2000);
+            }
+        }
+
+        function checkCategory(answer) {
+            if (answer === currentWord.category) {
+                showFeedback('🎉 Perfekt!', true);
+                score += 3;
+                updateScore();
+                createConfetti();
+                setTimeout(() => nextWord(), 1500);
+            } else {
+                showFeedback('❌ Nicht richtig... Es gehört zu: ' + currentWord.category, false);
+                wrongWords.push(currentWord);
+                setTimeout(() => nextWord(), 2000);
+            }
+        }
+
+        function showFeedback(text, isCorrect) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = text;
+            feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+        }
+
+        function nextWord() {
+            currentIndex++;
+            showWord();
+        }
+
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7', '#a29bfe', '#fd79a8', '#fdcb6e'];
+            const container = document.getElementById('confetti-container');
+            
+            // Erstelle 40 Konfetti-Partikel
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    // Zufällige Richtung in alle Richtungen vom Zentrum
+                    const angle = (Math.PI * 2 * i) / 40 + (Math.random() - 0.5) * 0.5;
+                    const velocity = 150 + Math.random() * 150;
+                    const tx = Math.cos(angle) * velocity;
+                    const ty = Math.sin(angle) * velocity;
+                    
+                    confetti.style.setProperty('--tx', tx + 'px');
+                    confetti.style.setProperty('--ty', ty + 'px');
+                    
+                    confetti.style.animation = 'confetti-burst 1.2s ease-out forwards';
+                    
+                    container.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 1200);
+                }, i * 15);
+            }
+        }
+
+        function showFinalScreen() {
+            document.getElementById('game-area').style.display = 'none';
+            document.getElementById('final-screen').style.display = 'block';
+            document.getElementById('final-score').textContent = score;
+            createConfetti();
+        }
+
+        // Start das Spiel
+        showWord();
+    </script>
+</body>
+
+<!-- MINI-IMPRINT (safe corner) -->
+<button class="sbbz-legal-btn" id="sbbzLegalBtn" type="button" aria-label="Impressum öffnen">
+  ❗
+</button>
+
+<div class="sbbz-legal" id="sbbzLegal" aria-hidden="true">
+  <div class="sbbz-legal__panel" role="dialog" aria-modal="true" aria-label="Impressum und Datenschutz">
+    <button class="sbbz-legal__close" id="sbbzLegalClose" type="button" aria-label="Schließen">✕</button>
+
+    <div class="sbbz-legal__links">
+      <a href="https://www.sbbz.app/">Startseite</a>
+        <span aria-hidden="true">·</span>
+      <a href="https://www.sbbz.app/impressum.html">Impressum</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://www.sbbz.app/datenschutz.html">Datenschutz</a>
+    </div>
+
+    <div class="sbbz-legal__name">
+      <span id="sbbzLegalName">sbbz.app by Lukas Flad</span> · © <span id="sbbzYear"></span>
+    </div>
+  </div>
+</div>
+
+<style>
+/* ✅ Button: auffälliger + gut sichtbar */
+.sbbz-legal-btn{
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.96);
+  border: 2px solid rgba(0,0,0,.12);
+  color: rgba(0,0,0,.75);
+
+  display: grid;
+  place-items: center;
+
+  font: 800 16px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  z-index: 9999;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  box-shadow:
+    0 10px 26px rgba(0,0,0,.22),
+    0 0 0 4px rgba(255,255,255,.08);
+
+  opacity: .9;
+  transition: transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+  animation: sbbzLegalPulse 2.6s ease-in-out infinite;
+}
+
+.sbbz-legal-btn:hover{
+  transform: translateY(-1px) scale(1.03);
+  box-shadow:
+    0 14px 34px rgba(0,0,0,.28),
+    0 0 0 6px rgba(255,255,255,.10);
+}
+
+.sbbz-legal-btn:active{ transform: scale(.96); }
+
+@keyframes sbbzLegalPulse{
+  0%, 100% { box-shadow: 0 10px 26px rgba(0,0,0,.22), 0 0 0 4px rgba(255,255,255,.08); }
+  50%      { box-shadow: 0 12px 30px rgba(0,0,0,.26), 0 0 0 7px rgba(255,255,255,.12); }
+}
+
+/* --- Overlay (hidden by default) --- */
+.sbbz-legal{
+  position: fixed;
+  inset: 0;
+  display: none; /* off by default */
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px;
+  z-index: 10000;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(6px);
+}
+.sbbz-legal.is-open{ display: flex; }
+
+/* --- Minimal panel --- */
+.sbbz-legal__panel{
+  width: min(520px, 100%);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(10,10,18,.86);
+  color: rgba(255,255,255,.78);
+  padding: 14px 14px 12px;
+  position: relative;
+  box-shadow: 0 18px 60px rgba(0,0,0,.45);
+}
+
+.sbbz-legal__close{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.75);
+  cursor: pointer;
+  font: 700 14px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+.sbbz-legal__close:hover{ background: rgba(255,255,255,.10); }
+
+.sbbz-legal__links{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-top: 6px;
+}
+.sbbz-legal__links a{
+  color: rgba(255,255,255,.82);
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+.sbbz-legal__links a:hover{ text-decoration: underline; }
+
+.sbbz-legal__name{
+  margin-top: 6px;
+  text-align: center;
+  font: 12px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: rgba(255,255,255,.60);
+}
+</style>
+
+<script>
+  // year
+  document.getElementById("sbbzYear").textContent = new Date().getFullYear();
+
+  // open/close
+  const btn = document.getElementById("sbbzLegalBtn");
+  const overlay = document.getElementById("sbbzLegal");
+  const closeBtn = document.getElementById("sbbzLegalClose");
+
+  function openLegal(){
+    overlay.classList.add("is-open");
+    overlay.setAttribute("aria-hidden","false");
+  }
+  function closeLegal(){
+    overlay.classList.remove("is-open");
+    overlay.setAttribute("aria-hidden","true");
+  }
+
+  btn.addEventListener("click", openLegal);
+  closeBtn.addEventListener("click", closeLegal);
+
+  // click outside panel closes
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeLegal();
+  });
+
+  // ESC closes (desktop)
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("is-open")) closeLegal();
+  });
+</script>
+</html>

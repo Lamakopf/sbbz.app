@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Satzzeichen-Detektiv 🔍</title>
+    <link rel="stylesheet" href="./assets/fonts/fonts.css">
+    <style>
+        :root {
+            --dark-blue: #0a0a1a;
+            --mystery-blue: #1a1a3e;
+            --accent-gold: #ffd700;
+            --accent-orange: #ff8c00;
+            --ghost-green: #00ff88;
+            --blood-red: #ff3333;
+            --paper-cream: #f4e4bc;
+            --ink-brown: #3d2914;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--dark-blue);
+            color: white;
+        }
+
+        /* Background */
+        .bg-atmosphere {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 0%, rgba(26, 26, 62, 0.8) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 100%, rgba(255, 140, 0, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, var(--dark-blue) 0%, var(--mystery-blue) 50%, var(--dark-blue) 100%);
+            z-index: 0;
+        }
+
+        /* Main Game Container */
+        .game-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+        }
+
+        /* Compact Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 10px var(--accent-gold));
+        }
+
+        .title {
+            font-family: 'Creepster', cursive;
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            color: var(--accent-gold);
+            text-shadow: 0 0 10px var(--accent-gold);
+            letter-spacing: 2px;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 12px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
+
+        /* Progress Dots */
+        .story-progress {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            transition: all 0.3s;
+        }
+
+        .progress-dot.completed {
+            background: var(--ghost-green);
+            border-color: var(--ghost-green);
+            box-shadow: 0 0 10px var(--ghost-green);
+        }
+
+        .progress-dot.current {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 10px var(--accent-gold);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Main Content - Centered and Compact */
+        .main-content {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+            align-items: flex-start;
+        }
+
+        /* Left Column */
+        .left-column {
+            flex: 1;
+            max-width: 480px;
+        }
+
+        /* Case File Card - Compact */
+        .case-file {
+            background: var(--paper-cream);
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .case-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--ink-brown);
+            margin-bottom: 12px;
+        }
+
+        .case-stamp {
+            background: var(--blood-red);
+            color: white;
+            padding: 4px 10px;
+            font-family: 'Creepster', cursive;
+            font-size: 0.75rem;
+            transform: rotate(-3deg);
+        }
+
+        .case-number {
+            font-family: 'Creepster', cursive;
+            font-size: 1rem;
+            color: var(--ink-brown);
+        }
+
+        .case-title {
+            font-family: 'Creepster', cursive;
+            font-size: 1.3rem;
+            color: var(--ink-brown);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .story-container {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            padding: 12px 15px;
+            border-left: 4px solid var(--ink-brown);
+            margin-bottom: 15px;
+        }
+
+        .story-text {
+            font-size: 1rem;
+            color: var(--ink-brown);
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        /* Sentence Display */
+        .sentence-display {
+            background: white;
+            border: 3px dashed var(--ink-brown);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .sentence-text {
+            font-size: 1.5rem;
+            color: var(--ink-brown);
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        .punctuation-slot {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+            border-radius: 10px;
+            margin: 0 5px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--ink-brown);
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
+            animation: slotPulse 2s infinite;
+            vertical-align: middle;
+            border: 2px dashed var(--ink-brown);
+        }
+
+        @keyframes slotPulse {
+            0%, 100% { box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(255, 140, 0, 0.7); }
+        }
+
+        .punctuation-slot.filled {
+            animation: none;
+            background: var(--ghost-green);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.5);
+            border: 2px solid var(--ghost-green);
+        }
+
+        .punctuation-slot.filled.wrong {
+            background: var(--blood-red);
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.5);
+            border: 2px solid var(--blood-red);
+            color: white;
+        }
+
+        /* Right Column */
+        .right-column {
+            flex: 1;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Choices Section */
+        .choices-section {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .choices-label {
+            font-family: 'Creepster', cursive;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+        }
+
+        .choices-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .choice-btn {
+            width: 75px;
+            height: 75px;
+            border: none;
+            border-radius: 15px;
+            font-size: 2.5rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.4s;
+        }
+
+        .choice-btn:hover::before {
+            left: 100%;
+        }
+
+        .choice-btn.punkt {
+            background: linear-gradient(135deg, #4a90d9, #357abd);
+            color: white;
+            box-shadow: 0 6px 20px rgba(74, 144, 217, 0.4);
+        }
+
+        .choice-btn.ausruf {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .choice-btn.frage {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-5px) scale(1.08);
+        }
+
+        .choice-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Feedback Section */
+        .feedback-section {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 18px;
+            display: none;
+        }
+
+        .feedback-section.show {
+            display: block;
+        }
+
+        .feedback-section.correct {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.25), rgba(0, 200, 100, 0.15));
+            border: 2px solid var(--ghost-green);
+        }
+
+        .feedback-section.wrong {
+            background: linear-gradient(135deg, rgba(255, 51, 51, 0.2), rgba(200, 50, 50, 0.1));
+            border: 2px solid var(--blood-red);
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .feedback-icon {
+            font-size: 2rem;
+        }
+
+        .feedback-title {
+            font-family: 'Creepster', cursive;
+            font-size: 1.3rem;
+        }
+
+        .feedback-section.correct .feedback-title {
+            color: var(--ghost-green);
+        }
+
+        .feedback-section.wrong .feedback-title {
+            color: white;
+        }
+
+        .feedback-explanation {
+            font-size: 1rem;
+            color: white;
+            line-height: 1.5;
+        }
+
+        /* Correct Answer Display */
+        .correct-answer-display {
+            background: rgba(0, 255, 136, 0.15);
+            border: 2px solid var(--ghost-green);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 12px;
+        }
+
+        .correct-answer-label {
+            font-size: 0.9rem;
+            color: var(--ghost-green);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .correct-answer-sentence {
+            font-size: 1.15rem;
+            color: white;
+            font-weight: 700;
+        }
+
+        .correct-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background: var(--ghost-green);
+            border-radius: 8px;
+            color: var(--dark-blue);
+            font-size: 1.5rem;
+            margin-left: 8px;
+            vertical-align: middle;
+            box-shadow: 0 0 15px var(--ghost-green);
+        }
+
+        .why-correct {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid var(--ghost-green);
+        }
+
+        .why-correct-label {
+            font-weight: 700;
+            color: var(--ghost-green);
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+
+        .why-correct-text {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.4;
+        }
+
+        .wrong-choice-note {
+            margin-top: 12px;
+            padding: 10px 12px;
+            background: rgba(255, 51, 51, 0.15);
+            border-radius: 8px;
+            border-left: 3px solid var(--blood-red);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Continue Button */
+        .continue-btn {
+            margin-top: 15px;
+            padding: 14px 30px;
+            font-family: 'Creepster', cursive;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+            border: none;
+            border-radius: 30px;
+            color: var(--ink-brown);
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 140, 0, 0.4);
+            transition: all 0.3s;
+            display: none;
+            width: 100%;
+            letter-spacing: 1px;
+        }
+
+        .continue-btn.show {
+            display: block;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.6);
+        }
+
+        /* Waiting State */
+        .waiting-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .waiting-message.hidden {
+            display: none;
+        }
+
+        .waiting-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            animation: magnify 2s ease-in-out infinite;
+        }
+
+        @keyframes magnify {
+            0%, 100% { transform: rotate(-10deg) scale(1); }
+            50% { transform: rotate(10deg) scale(1.1); }
+        }
+
+        .waiting-text {
+            font-family: 'Creepster', cursive;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+        }
+
+        /* Start Screen */
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-blue);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .start-screen.hidden {
+            display: none;
+        }
+
+        .start-logo {
+            font-size: 5rem;
+            margin-bottom: 15px;
+            animation: detectiveFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px var(--accent-gold));
+        }
+
+        @keyframes detectiveFloat {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .start-title {
+            font-family: 'Creepster', cursive;
+            font-size: clamp(2rem, 7vw, 4rem);
+            color: var(--accent-gold);
+            text-shadow: 0 0 20px var(--accent-gold), 0 0 40px var(--accent-orange);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .start-subtitle {
+            font-family: 'Creepster', cursive;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: var(--ghost-green);
+            text-shadow: 0 0 15px var(--ghost-green);
+            margin-bottom: 25px;
+        }
+
+        .start-description {
+            max-width: 450px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .punctuation-preview {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .preview-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preview-symbol {
+            width: 55px;
+            height: 55px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .preview-symbol.punkt { background: linear-gradient(135deg, #4a90d9, #357abd); }
+        .preview-symbol.ausruf { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .preview-symbol.frage { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+
+        .preview-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .start-btn {
+            font-family: 'Creepster', cursive;
+            font-size: 1.5rem;
+            padding: 18px 55px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+            border: none;
+            border-radius: 40px;
+            color: var(--ink-brown);
+            cursor: pointer;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 30px rgba(255, 140, 0, 0.5);
+            transition: all 0.3s;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 40px rgba(255, 140, 0, 0.7);
+        }
+
+        /* End Screen */
+        .end-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-blue);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .end-screen.show {
+            display: flex;
+        }
+
+        .end-badge {
+            font-size: 5rem;
+            margin-bottom: 15px;
+        }
+
+        .end-title {
+            font-family: 'Creepster', cursive;
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: var(--accent-gold);
+            text-shadow: 0 0 25px var(--accent-gold);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .end-stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 25px;
+        }
+
+        .end-stat {
+            text-align: center;
+        }
+
+        .end-stat-value {
+            font-family: 'Creepster', cursive;
+            font-size: 2.5rem;
+            color: var(--ghost-green);
+            text-shadow: 0 0 15px var(--ghost-green);
+        }
+
+        .end-stat-label {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .rank-display {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid var(--accent-gold);
+            border-radius: 15px;
+            padding: 15px 35px;
+            margin-bottom: 25px;
+        }
+
+        .rank-title {
+            font-family: 'Creepster', cursive;
+            font-size: 1.6rem;
+            color: var(--accent-gold);
+        }
+
+        /* Mobile Layout */
+        @media (max-width: 850px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .left-column, .right-column {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .case-file {
+                padding: 15px;
+            }
+
+            .sentence-text {
+                font-size: 1.3rem;
+            }
+
+            .choice-btn {
+                width: 65px;
+                height: 65px;
+                font-size: 2rem;
+            }
+        }
+
+        /* Small screens */
+        @media (max-width: 500px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px 15px;
+            }
+
+            .case-title {
+                font-size: 1.1rem;
+            }
+
+            .story-text {
+                font-size: 0.9rem;
+            }
+
+            .sentence-text {
+                font-size: 1.2rem;
+            }
+
+            .punctuation-slot {
+                width: 38px;
+                height: 38px;
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: particleFly 1s ease-out forwards;
+        }
+
+        @keyframes particleFly {
+            0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-atmosphere"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Start Screen -->
+    <div class="start-screen" id="startScreen">
+        <div class="start-logo">🔍</div>
+        <div class="start-title">SATZZEICHEN-DETEKTIV</div>
+        <div class="start-subtitle">Das Geheimnis der fehlenden Zeichen</div>
+        <div class="start-description">
+            Mysteriöse Fälle warten auf dich! In jedem Satz fehlt ein wichtiges Satzzeichen. 
+            Finde das richtige Zeichen und löse den Fall!
+        </div>
+        <div class="punctuation-preview">
+            <div class="preview-item">
+                <div class="preview-symbol punkt">.</div>
+                <div class="preview-label">Aussage</div>
+            </div>
+            <div class="preview-item">
+                <div class="preview-symbol ausruf">!</div>
+                <div class="preview-label">Gefühl</div>
+            </div>
+            <div class="preview-item">
+                <div class="preview-symbol frage">?</div>
+                <div class="preview-label">Frage</div>
+            </div>
+        </div>
+        <button class="start-btn" onclick="startGame()">🔦 ERMITTLUNG STARTEN</button>
+    </div>
+
+    <!-- End Screen -->
+    <div class="end-screen" id="endScreen">
+        <div class="end-badge">🏆</div>
+        <div class="end-title">FALL GELÖST!</div>
+        <div class="end-stats">
+            <div class="end-stat">
+                <div class="end-stat-value" id="finalScore">0</div>
+                <div class="end-stat-label">Punkte</div>
+            </div>
+            <div class="end-stat">
+                <div class="end-stat-value" id="finalCorrect">0/0</div>
+                <div class="end-stat-label">Richtig</div>
+            </div>
+        </div>
+        <div class="rank-display">
+            <div class="rank-title" id="rankTitle">Anfänger</div>
+        </div>
+        <button class="start-btn" onclick="restartGame()">🔄 NEUER FALL</button>
+    </div>
+
+    <!-- Game UI -->
+    <div class="game-container" id="gameContainer">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🔍</span>
+                <h1 class="title">SATZZEICHEN-DETEKTIV</h1>
+            </div>
+            <div class="stats-bar">
+                <div class="stat">
+                    <span>⭐</span>
+                    <span class="stat-value" id="score">0</span>
+                </div>
+                <div class="stat">
+                    <span>📁</span>
+                    <span class="stat-value" id="caseNum">Fall 1</span>
+                </div>
+                <div class="stat">
+                    <span>🔥</span>
+                    <span class="stat-value" id="streak">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Progress Dots -->
+        <div class="story-progress" id="storyProgress"></div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Column: Story & Sentence -->
+            <div class="left-column">
+                <div class="case-file">
+                    <div class="case-header">
+                        <div class="case-stamp">GEHEIM</div>
+                        <div class="case-number" id="caseTitle">AKTE #001</div>
+                    </div>
+                    <div class="case-title" id="storyTitle">Der verschwundene Hund</div>
+                    <div class="story-container">
+                        <p class="story-text" id="storyText">Die Geschichte lädt...</p>
+                    </div>
+                    <div class="sentence-display">
+                        <p class="sentence-text" id="sentenceText">
+                            Der Satz erscheint hier <span class="punctuation-slot" id="punctuationSlot"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Choices & Feedback -->
+            <div class="right-column">
+                <div class="choices-section">
+                    <div class="choices-label">🔎 Welches Satzzeichen fehlt?</div>
+                    <div class="choices-container">
+                        <button class="choice-btn punkt" onclick="selectPunctuation('.')">.</button>
+                        <button class="choice-btn ausruf" onclick="selectPunctuation('!')">!</button>
+                        <button class="choice-btn frage" onclick="selectPunctuation('?')">?</button>
+                    </div>
+                </div>
+
+                <!-- Waiting State -->
+                <div class="waiting-message" id="waitingMessage">
+                    <div class="waiting-icon">🔎</div>
+                    <div class="waiting-text">Untersuche den Satz genau...</div>
+                </div>
+
+                <!-- Feedback Section -->
+                <div class="feedback-section" id="feedbackSection">
+                    <div class="feedback-header">
+                        <div class="feedback-icon" id="feedbackIcon">✅</div>
+                        <div class="feedback-title" id="feedbackTitle">Richtig!</div>
+                    </div>
+                    <div class="feedback-explanation" id="feedbackExplanation"></div>
+                    <div id="meaningComparison"></div>
+                    <button class="continue-btn" id="continueBtn" onclick="nextSentence()">WEITER →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Story Database
+        const stories = [
+            {
+                title: "Der verschwundene Hund",
+                caseNumber: "001",
+                intro: "Max, der Hund von Frau Müller, ist seit gestern verschwunden. Du bist der Detektiv!",
+                sentences: [
+                    {
+                        text: "Hast du meinen Hund gesehen",
+                        correct: "?",
+                        explanations: {
+                            "?": "Richtig! Das ist eine Frage - Frau Müller will etwas wissen.",
+                            ".": "Das wäre nur eine Aussage. Aber Frau Müller fragt etwas!",
+                            "!": "Das wäre ein Ausruf. Aber Frau Müller stellt eine Frage."
+                        },
+                        context: "Frau Müller klingelt an deiner Tür und fragt:"
+                    },
+                    {
+                        text: "Max ist weg",
+                        correct: "!",
+                        explanations: {
+                            "!": "Richtig! Frau Müller ist aufgeregt und ruft das laut.",
+                            ".": "Möglich, aber Frau Müller ist sehr aufgeregt!",
+                            "?": "Das ist keine Frage - sie weiß, dass Max weg ist."
+                        },
+                        context: "Sie ruft verzweifelt:"
+                    },
+                    {
+                        text: "Wann hast du ihn zuletzt gesehen",
+                        correct: "?",
+                        explanations: {
+                            "?": "Richtig! Du stellst eine wichtige Detektiv-Frage.",
+                            ".": "Das ist keine Aussage - du willst etwas herausfinden!",
+                            "!": "Du fragst ruhig nach Fakten, kein Ausruf."
+                        },
+                        context: "Du fragst als Detektiv:"
+                    },
+                    {
+                        text: "Gestern Abend war er noch im Garten",
+                        correct: ".",
+                        explanations: {
+                            ".": "Richtig! Das ist eine normale Aussage - eine Information.",
+                            "?": "Das ist keine Frage - sie erzählt dir etwas.",
+                            "!": "Sie erklärt ruhig, nicht aufgeregt."
+                        },
+                        context: "Frau Müller erzählt:"
+                    },
+                    {
+                        text: "Da ist eine Spur",
+                        correct: "!",
+                        explanations: {
+                            "!": "Richtig! Du bist aufgeregt - du hast einen Hinweis gefunden!",
+                            ".": "Du bist aufgeregt - ein Ausrufezeichen passt besser!",
+                            "?": "Du hast die Spur gefunden, keine Frage!"
+                        },
+                        context: "Im Garten entdeckst du Pfotenabdrücke:"
+                    }
+                ]
+            },
+            {
+                title: "Das Geheimnis im Schulkeller",
+                caseNumber: "002",
+                intro: "Seltsame Geräusche kommen aus dem Schulkeller. Zeit für eine Ermittlung!",
+                sentences: [
+                    {
+                        text: "Hörst du das auch",
+                        correct: "?",
+                        explanations: {
+                            "?": "Richtig! Du fragst deinen Freund, ob er es hört.",
+                            ".": "Das ist eine Frage - du willst wissen, ob er es hört!",
+                            "!": "Du fragst leise, kein lauter Ausruf."
+                        },
+                        context: "Du flüsterst zu Leo:"
+                    },
+                    {
+                        text: "Das klingt unheimlich",
+                        correct: "!",
+                        explanations: {
+                            "!": "Richtig! Leo hat Angst und drückt sein Gefühl aus!",
+                            ".": "Leo ist erschrocken - das zeigt ein Ausrufezeichen!",
+                            "?": "Leo fragt nicht - er sagt, was er fühlt."
+                        },
+                        context: "Leo sagt ängstlich:"
+                    },
+                    {
+                        text: "Wir müssen nachsehen",
+                        correct: ".",
+                        explanations: {
+                            ".": "Richtig! Du sagst ruhig und bestimmt, was ihr tun müsst.",
+                            "!": "Du bleibst ruhig wie ein echter Detektiv.",
+                            "?": "Du fragst nicht - du weißt, was zu tun ist."
+                        },
+                        context: "Du sagst mutig:"
+                    },
+                    {
+                        text: "Was ist das für ein Tier",
+                        correct: "?",
+                        explanations: {
+                            "?": "Richtig! Du siehst etwas und fragst dich, was es ist.",
+                            ".": "Das ist eine Frage - du bist überrascht!",
+                            "!": "Du fragst dich etwas, kein Ausruf."
+                        },
+                        context: "Im Keller seht ihr leuchtende Augen:"
+                    },
+                    {
+                        text: "Es ist nur eine Katze",
+                        correct: "!",
+                        explanations: {
+                            "!": "Richtig! Ihr seid erleichtert - nur eine Katze!",
+                            ".": "Ihr seid so erleichtert - ein Ausrufezeichen passt!",
+                            "?": "Ihr wisst jetzt, was es ist - keine Frage!"
+                        },
+                        context: "Leo ruft erleichtert:"
+                    }
+                ]
+            },
+            {
+                title: "Der geheimnisvolle Brief",
+                caseNumber: "003",
+                intro: "Ein Brief ohne Absender liegt im Briefkasten. Was steht drin?",
+                sentences: [
+                    {
+                        text: "Triff mich um drei Uhr am alten Baum",
+                        correct: ".",
+                        explanations: {
+                            ".": "Richtig! Das ist eine Anweisung - eine klare Aussage.",
+                            "!": "Der Brief klingt geheimnisvoll, nicht aufgeregt.",
+                            "?": "Das ist keine Frage - jemand sagt dir, wo du hin sollst."
+                        },
+                        context: "Die erste Zeile des Briefs:"
+                    },
+                    {
+                        text: "Komm allein",
+                        correct: "!",
+                        explanations: {
+                            "!": "Richtig! Das ist ein wichtiger Befehl!",
+                            ".": "'Komm allein' klingt wie ein dringender Befehl.",
+                            "?": "Das ist keine Frage - es ist eine Anweisung."
+                        },
+                        context: "Die nächste Zeile betont:"
+                    },
+                    {
+                        text: "Wer hat diesen Brief geschrieben",
+                        correct: "?",
+                        explanations: {
+                            "?": "Richtig! Du fragst dich, wer der Absender ist.",
+                            ".": "Das ist eine Frage - du willst es herausfinden!",
+                            "!": "Du fragst dich etwas, kein Ausruf."
+                        },
+                        context: "Du fragst dich:"
+                    },
+                    {
+                        text: "Das muss ich herausfinden",
+                        correct: "!",
+                        explanations: {
+                            "!": "Richtig! Du bist entschlossen und motiviert!",
+                            ".": "Du bist ein Detektiv mit einer Mission!",
+                            "?": "Du weißt, was du tun musst - keine Frage."
+                        },
+                        context: "Du sagst entschlossen:"
+                    },
+                    {
+                        text: "Bist du der Briefschreiber",
+                        correct: "?",
+                        explanations: {
+                            "?": "Richtig! Du fragst die Person am Baum!",
+                            ".": "Das ist eine direkte Frage an die Person!",
+                            "!": "Du fragst die Person - kein Ausruf."
+                        },
+                        context: "Am Baum fragst du:"
+                    }
+                ]
+            }
+        ];
+
+        // Game State
+        let gameState = {
+            score: 0,
+            currentStory: 0,
+            currentSentence: 0,
+            streak: 0,
+            totalCorrect: 0,
+            totalAttempts: 0,
+            isPlaying: false
+        };
+
+        // DOM Elements
+        const scoreEl = document.getElementById('score');
+        const caseNumEl = document.getElementById('caseNum');
+        const streakEl = document.getElementById('streak');
+        const storyProgress = document.getElementById('storyProgress');
+        const storyTitle = document.getElementById('storyTitle');
+        const storyText = document.getElementById('storyText');
+        const sentenceText = document.getElementById('sentenceText');
+        const feedbackSection = document.getElementById('feedbackSection');
+        const feedbackIcon = document.getElementById('feedbackIcon');
+        const feedbackTitle = document.getElementById('feedbackTitle');
+        const feedbackExplanation = document.getElementById('feedbackExplanation');
+        const meaningComparison = document.getElementById('meaningComparison');
+        const continueBtn = document.getElementById('continueBtn');
+        const caseTitle = document.getElementById('caseTitle');
+        const waitingMessage = document.getElementById('waitingMessage');
+
+        function updateProgressDots() {
+            const story = stories[gameState.currentStory];
+            storyProgress.innerHTML = '';
+            
+            for (let i = 0; i < story.sentences.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot';
+                if (i < gameState.currentSentence) {
+                    dot.classList.add('completed');
+                } else if (i === gameState.currentSentence) {
+                    dot.classList.add('current');
+                }
+                storyProgress.appendChild(dot);
+            }
+        }
+
+        function loadSentence() {
+            const story = stories[gameState.currentStory];
+            const sentence = story.sentences[gameState.currentSentence];
+
+            updateProgressDots();
+
+            caseTitle.textContent = `AKTE #${story.caseNumber}`;
+            storyTitle.textContent = story.title;
+            caseNumEl.textContent = `Fall ${gameState.currentStory + 1}`;
+
+            if (gameState.currentSentence === 0) {
+                storyText.textContent = story.intro;
+            } else {
+                storyText.textContent = sentence.context;
+            }
+
+            sentenceText.innerHTML = `${sentence.text} <span class="punctuation-slot" id="punctuationSlot"></span>`;
+
+            feedbackSection.classList.remove('show', 'correct', 'wrong');
+            waitingMessage.classList.remove('hidden');
+            continueBtn.classList.remove('show');
+            meaningComparison.innerHTML = '';
+
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            });
+        }
+
+        function selectPunctuation(punctuation) {
+            if (!gameState.isPlaying) return;
+
+            const story = stories[gameState.currentStory];
+            const sentence = story.sentences[gameState.currentSentence];
+            const isCorrect = punctuation === sentence.correct;
+
+            gameState.totalAttempts++;
+
+            const slot = document.getElementById('punctuationSlot');
+            slot.innerHTML = punctuation;
+            slot.classList.add('filled');
+
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+            });
+
+            waitingMessage.classList.add('hidden');
+            feedbackSection.classList.add('show');
+            
+            if (isCorrect) {
+                gameState.score += 100 + (gameState.streak * 20);
+                gameState.streak++;
+                gameState.totalCorrect++;
+
+                feedbackSection.classList.add('correct');
+                feedbackIcon.textContent = '✅';
+                feedbackTitle.textContent = 'Richtig!';
+                feedbackExplanation.textContent = sentence.explanations[punctuation];
+                meaningComparison.innerHTML = '';
+
+                createParticles(['⭐', '✨', '🔍', '💡']);
+            } else {
+                gameState.streak = 0;
+                slot.classList.add('wrong');
+
+                feedbackSection.classList.add('wrong');
+                feedbackIcon.textContent = '🔍';
+                feedbackTitle.textContent = 'Schau genau hin!';
+                feedbackExplanation.textContent = '';
+
+                meaningComparison.innerHTML = `
+                    <div class="correct-answer-display">
+                        <div class="correct-answer-label">✅ So ist es richtig:</div>
+                        <div class="correct-answer-sentence">
+                            ${sentence.text}<span class="correct-mark">${sentence.correct}</span>
+                        </div>
+                        <div class="why-correct">
+                            <div class="why-correct-label">💡 Warum?</div>
+                            <div class="why-correct-text">${sentence.explanations[sentence.correct]}</div>
+                        </div>
+                    </div>
+                    <div class="wrong-choice-note">
+                        Deine Wahl: <strong>${punctuation}</strong> — ${sentence.explanations[punctuation]}
+                    </div>
+                `;
+            }
+
+            updateStats();
+            continueBtn.classList.add('show');
+        }
+
+        function updateStats() {
+            scoreEl.textContent = gameState.score;
+            streakEl.textContent = gameState.streak;
+        }
+
+        function createParticles(emojis) {
+            const container = document.getElementById('particles');
+            
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                particle.style.left = (40 + Math.random() * 20) + '%';
+                particle.style.top = (40 + Math.random() * 20) + '%';
+                particle.style.setProperty('--tx', (Math.random() - 0.5) * 150 + 'px');
+                particle.style.setProperty('--ty', -50 - Math.random() * 80 + 'px');
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        function nextSentence() {
+            const story = stories[gameState.currentStory];
+            gameState.currentSentence++;
+
+            if (gameState.currentSentence >= story.sentences.length) {
+                gameState.currentStory++;
+                gameState.currentSentence = 0;
+
+                if (gameState.currentStory >= stories.length) {
+                    endGame();
+                    return;
+                }
+            }
+
+            loadSentence();
+        }
+
+        function getRank(percentage) {
+            if (percentage >= 90) return '🏆 Meister-Detektiv';
+            if (percentage >= 75) return '🥇 Senior-Ermittler';
+            if (percentage >= 60) return '🥈 Detektiv';
+            if (percentage >= 40) return '🥉 Junior-Detektiv';
+            return '📝 Detektiv-Azubi';
+        }
+
+        function endGame() {
+            gameState.isPlaying = false;
+            
+            const percentage = Math.round((gameState.totalCorrect / gameState.totalAttempts) * 100);
+            
+            document.getElementById('finalScore').textContent = gameState.score;
+            document.getElementById('finalCorrect').textContent = `${gameState.totalCorrect}/${gameState.totalAttempts}`;
+            document.getElementById('rankTitle').textContent = getRank(percentage);
+            
+            document.getElementById('endScreen').classList.add('show');
+        }
+
+        function startGame() {
+            document.getElementById('startScreen').classList.add('hidden');
+            
+            gameState = {
+                score: 0,
+                currentStory: 0,
+                currentSentence: 0,
+                streak: 0,
+                totalCorrect: 0,
+                totalAttempts: 0,
+                isPlaying: true
+            };
+
+            updateStats();
+            loadSentence();
+        }
+
+        function restartGame() {
+            document.getElementById('endScreen').classList.remove('show');
+            startGame();
+        }
+    </script>
+<!-- MINI-IMPRINT (safe corner) -->
+<button class="sbbz-legal-btn" id="sbbzLegalBtn" type="button" aria-label="Impressum öffnen">
+  ❗
+</button>
+
+<div class="sbbz-legal" id="sbbzLegal" aria-hidden="true">
+  <div class="sbbz-legal__panel" role="dialog" aria-modal="true" aria-label="Impressum und Datenschutz">
+    <button class="sbbz-legal__close" id="sbbzLegalClose" type="button" aria-label="Schließen">✕</button>
+
+    <div class="sbbz-legal__links">
+      <a href="https://www.sbbz.app/">Startseite</a>
+        <span aria-hidden="true">·</span>
+      <a href="https://www.sbbz.app/impressum.html">Impressum</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://www.sbbz.app/datenschutz.html">Datenschutz</a>
+    </div>
+
+    <div class="sbbz-legal__name">
+      <span id="sbbzLegalName">sbbz.app by Lukas Flad</span> · © <span id="sbbzYear"></span>
+    </div>
+  </div>
+</div>
+
+<style>
+/* ✅ Button: auffälliger + gut sichtbar */
+.sbbz-legal-btn{
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.96);
+  border: 2px solid rgba(0,0,0,.12);
+  color: rgba(0,0,0,.75);
+
+  display: grid;
+  place-items: center;
+
+  font: 800 16px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  z-index: 9999;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  box-shadow:
+    0 10px 26px rgba(0,0,0,.22),
+    0 0 0 4px rgba(255,255,255,.08);
+
+  opacity: .9;
+  transition: transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+  animation: sbbzLegalPulse 2.6s ease-in-out infinite;
+}
+
+.sbbz-legal-btn:hover{
+  transform: translateY(-1px) scale(1.03);
+  box-shadow:
+    0 14px 34px rgba(0,0,0,.28),
+    0 0 0 6px rgba(255,255,255,.10);
+}
+
+.sbbz-legal-btn:active{ transform: scale(.96); }
+
+@keyframes sbbzLegalPulse{
+  0%, 100% { box-shadow: 0 10px 26px rgba(0,0,0,.22), 0 0 0 4px rgba(255,255,255,.08); }
+  50%      { box-shadow: 0 12px 30px rgba(0,0,0,.26), 0 0 0 7px rgba(255,255,255,.12); }
+}
+
+/* --- Overlay (hidden by default) --- */
+.sbbz-legal{
+  position: fixed;
+  inset: 0;
+  display: none; /* off by default */
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px;
+  z-index: 10000;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(6px);
+}
+.sbbz-legal.is-open{ display: flex; }
+
+/* --- Minimal panel --- */
+.sbbz-legal__panel{
+  width: min(520px, 100%);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(10,10,18,.86);
+  color: rgba(255,255,255,.78);
+  padding: 14px 14px 12px;
+  position: relative;
+  box-shadow: 0 18px 60px rgba(0,0,0,.45);
+}
+
+.sbbz-legal__close{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.75);
+  cursor: pointer;
+  font: 700 14px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+.sbbz-legal__close:hover{ background: rgba(255,255,255,.10); }
+
+.sbbz-legal__links{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-top: 6px;
+}
+.sbbz-legal__links a{
+  color: rgba(255,255,255,.82);
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+.sbbz-legal__links a:hover{ text-decoration: underline; }
+
+.sbbz-legal__name{
+  margin-top: 6px;
+  text-align: center;
+  font: 12px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: rgba(255,255,255,.60);
+}
+</style>
+
+<script>
+  // year
+  document.getElementById("sbbzYear").textContent = new Date().getFullYear();
+
+  // open/close
+  const btn = document.getElementById("sbbzLegalBtn");
+  const overlay = document.getElementById("sbbzLegal");
+  const closeBtn = document.getElementById("sbbzLegalClose");
+
+  function openLegal(){
+    overlay.classList.add("is-open");
+    overlay.setAttribute("aria-hidden","false");
+  }
+  function closeLegal(){
+    overlay.classList.remove("is-open");
+    overlay.setAttribute("aria-hidden","true");
+  }
+
+  btn.addEventListener("click", openLegal);
+  closeBtn.addEventListener("click", closeLegal);
+
+  // click outside panel closes
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeLegal();
+  });
+
+  // ESC closes (desktop)
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("is-open")) closeLegal();
+  });
+</script>
+</html>

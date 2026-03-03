@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🎲 Verben-Abenteuer</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f0f4ff;
+  --bg-board: #ffffff;
+  --accent-orange: #ff6b35;
+  --accent-yellow: #ffb800;
+  --accent-green: #22c55e;
+  --accent-blue: #3b82f6;
+  --accent-pink: #ec4899;
+  --accent-purple: #8b5cf6;
+  --accent-teal: #14b8a6;
+  --text-dark: #1e293b;
+  --text-mid: #475569;
+  --shadow-soft: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-card: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+html, body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text-dark);
+  height: 100%;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  grid-template-rows: auto 1fr;
+  gap: 12px;
+  height: 100vh;
+  height: 100dvh;
+  padding: 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.game-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.title-area { display: flex; align-items: center; gap: 10px; }
+
+.game-logo {
+  width: 42px; height: 42px;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-pink));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  box-shadow: 0 3px 10px rgba(255,107,53,0.3);
+}
+
+.game-title {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.5rem; font-weight: 700;
+}
+.game-title span {
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.header-stats { display: flex; gap: 8px; align-items: center; }
+
+.stat-pill {
+  background: white; border-radius: 20px; padding: 6px 14px;
+  font-size: 0.8rem; font-weight: 800;
+  box-shadow: var(--shadow-soft);
+  display: flex; align-items: center; gap: 5px; white-space: nowrap;
+}
+.stat-pill .num { color: var(--accent-blue); font-family: 'Fredoka', sans-serif; font-size: 1rem; }
+
+.reset-btn {
+  background: white; border: none; border-radius: 10px; padding: 8px 12px;
+  font-size: 0.85rem; cursor: pointer; box-shadow: var(--shadow-soft);
+  font-weight: 700; color: var(--text-mid); transition: all 0.15s;
+}
+.reset-btn:hover { background: #f1f5f9; }
+
+.board-area {
+  background: var(--bg-board); border-radius: 20px; padding: 14px;
+  box-shadow: var(--shadow-card); position: relative; overflow: hidden;
+  display: flex; flex-direction: column; min-height: 0;
+}
+
+.board-area::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 10% 90%, rgba(236,72,153,0.06) 0%, transparent 40%),
+    radial-gradient(circle at 90% 10%, rgba(59,130,246,0.06) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255,184,0,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.board-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 5px; flex: 1; position: relative; z-index: 1; align-content: center;
+}
+
+.field {
+  border-radius: 10px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; font-weight: 700;
+  position: relative; transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-align: center; padding: 3px; min-height: 0; aspect-ratio: 1; overflow: hidden;
+}
+
+.field-number { position: absolute; top: 2px; left: 5px; font-size: 0.55rem; font-weight: 800; opacity: 0.4; }
+.field-emoji { font-size: clamp(0.9rem, 2.5vw, 1.4rem); line-height: 1; }
+.field-verb {
+  font-family: 'Fredoka', sans-serif; font-size: clamp(0.5rem, 1.3vw, 0.72rem);
+  font-weight: 600; line-height: 1.1; margin-top: 1px; color: white;
+}
+
+.field-c0 { background: linear-gradient(145deg, #3b82f6, #2563eb); }
+.field-c1 { background: linear-gradient(145deg, #8b5cf6, #7c3aed); }
+.field-c2 { background: linear-gradient(145deg, #14b8a6, #0d9488); }
+.field-c3 { background: linear-gradient(145deg, #f59e0b, #d97706); }
+.field-c4 { background: linear-gradient(145deg, #22c55e, #16a34a); }
+.field-c5 { background: linear-gradient(145deg, #ec4899, #db2777); }
+.field-c6 { background: linear-gradient(145deg, #6366f1, #4f46e5); }
+
+.field-bonus {
+  background: linear-gradient(145deg, #ff6b35, #e85d26) !important;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ff6b35;
+  animation: bonusPop 2.5s ease-in-out infinite;
+}
+@keyframes bonusPop { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+
+.field-start {
+  background: linear-gradient(145deg, #22c55e, #16a34a) !important;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #22c55e;
+}
+
+.field-goal {
+  background: linear-gradient(145deg, #ffb800, #f59e0b) !important;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ffb800;
+  animation: goalPulse 2s ease-in-out infinite;
+}
+@keyframes goalPulse {
+  0%,100% { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ffb800; }
+  50% { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ffb800, 0 0 15px rgba(255,184,0,0.4); }
+}
+
+.field::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 50%; bottom: 50%;
+  background: rgba(255,255,255,0.15); border-radius: 10px 0 30% 0; pointer-events: none;
+}
+
+.field.active {
+  transform: scale(1.12); z-index: 10;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--accent-yellow), 0 4px 20px rgba(255,184,0,0.35) !important;
+}
+
+.field-empty { visibility: hidden; }
+
+.player-piece {
+  position: absolute; width: 30px; height: 30px; border-radius: 50%;
+  background: white; border: 3px solid var(--accent-orange);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.25); z-index: 20;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; pointer-events: none;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.player-piece.moving { animation: hop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes hop { 0% { transform: scale(1) translateY(0); } 40% { transform: scale(1.3) translateY(-18px); } 100% { transform: scale(1) translateY(0); } }
+
+.sidebar { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+
+.card {
+  background: white; border-radius: 16px; padding: 14px; box-shadow: var(--shadow-card);
+}
+.card-title {
+  font-family: 'Fredoka', sans-serif; font-size: 0.9rem; font-weight: 700;
+  color: var(--text-mid); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+
+.dice-row { display: flex; align-items: center; gap: 12px; }
+
+.dice-cube {
+  width: 70px; height: 70px;
+  background: linear-gradient(145deg, #fefefe, #f1f5f9);
+  border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  font-size: 2.4rem; font-family: 'Fredoka', sans-serif; font-weight: 700;
+  color: var(--text-dark); box-shadow: 0 4px 12px rgba(0,0,0,0.1), inset 0 -3px 0 rgba(0,0,0,0.06);
+  flex-shrink: 0; cursor: pointer; transition: transform 0.15s;
+}
+.dice-cube:active { transform: scale(0.92); }
+.dice-cube.rolling { animation: diceRoll 0.4s ease-out; }
+@keyframes diceRoll {
+  0% { transform: rotate(0) scale(1); } 25% { transform: rotate(90deg) scale(1.1); }
+  50% { transform: rotate(180deg) scale(0.95); } 75% { transform: rotate(270deg) scale(1.05); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.dice-btn {
+  flex: 1; background: linear-gradient(135deg, var(--accent-blue), #2563eb);
+  border: none; color: white; font-family: 'Fredoka', sans-serif;
+  font-size: 1rem; font-weight: 700; padding: 14px 10px; border-radius: 14px;
+  cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 12px rgba(59,130,246,0.3); line-height: 1.2;
+}
+.dice-btn:hover { transform: translateY(-1px); }
+.dice-btn:active { transform: translateY(0); }
+.dice-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.pronoun-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+
+.pronoun-card {
+  border-radius: 10px; padding: 6px 2px; text-align: center;
+  background: #f8fafc; border: 2px solid #e2e8f0; transition: all 0.3s;
+}
+.pronoun-card.highlight {
+  border-color: var(--accent-yellow); background: #fffbeb;
+  box-shadow: 0 0 0 2px rgba(255,184,0,0.2); transform: scale(1.06);
+}
+.pronoun-num { font-family: 'Fredoka', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--accent-blue); line-height: 1; }
+.pronoun-label { font-size: 0.75rem; font-weight: 800; color: var(--text-dark); }
+
+.task-card { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
+.task-inner { text-align: center; }
+.task-waiting { color: var(--text-mid); font-size: 0.95rem; font-weight: 600; }
+
+.task-verb-display {
+  font-family: 'Fredoka', sans-serif; font-size: 1.6rem; font-weight: 700;
+  color: var(--accent-blue); margin-bottom: 2px;
+}
+.task-instruction { font-size: 0.8rem; color: var(--text-mid); font-weight: 600; margin-bottom: 6px; }
+
+.task-bonus-badge {
+  display: inline-block; background: linear-gradient(135deg, var(--accent-orange), #e85d26);
+  color: white; font-family: 'Fredoka', sans-serif; font-size: 0.75rem; font-weight: 700;
+  padding: 4px 12px; border-radius: 20px; margin-top: 6px;
+}
+
+.show-answer-btn {
+  background: linear-gradient(135deg, var(--accent-green), #16a34a);
+  border: none; color: white; font-family: 'Fredoka', sans-serif;
+  font-size: 0.85rem; font-weight: 700; padding: 8px 20px; border-radius: 10px;
+  cursor: pointer; transition: all 0.15s; margin-top: 8px;
+  box-shadow: 0 3px 8px rgba(34,197,94,0.3);
+}
+.show-answer-btn:hover { transform: translateY(-1px); }
+
+.answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 6px; }
+.answer-item {
+  background: #f0fdf4; border: 1.5px solid var(--accent-green);
+  border-radius: 8px; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; color: #166534;
+}
+
+.celebration-overlay {
+  position: fixed; inset: 0; background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;
+  z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.celebration-overlay.show { opacity: 1; pointer-events: all; }
+
+.celeb-box {
+  background: white; border-radius: 24px; padding: 36px; text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  transform: scale(0.85); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); max-width: 360px;
+}
+.celebration-overlay.show .celeb-box { transform: scale(1); }
+
+.celeb-emoji { font-size: 3.5rem; margin-bottom: 12px; animation: celebBounce 0.8s ease-in-out infinite; }
+@keyframes celebBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+.celeb-title {
+  font-family: 'Fredoka', sans-serif; font-size: 1.8rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;
+}
+.celeb-text { font-size: 0.95rem; color: var(--text-mid); margin-bottom: 18px; font-weight: 600; }
+
+.celeb-btn {
+  background: linear-gradient(135deg, var(--accent-blue), #2563eb);
+  border: none; color: white; font-family: 'Fredoka', sans-serif;
+  font-size: 1.05rem; font-weight: 700; padding: 12px 32px; border-radius: 14px;
+  cursor: pointer; box-shadow: 0 4px 12px rgba(59,130,246,0.3); transition: all 0.15s;
+}
+.celeb-btn:hover { transform: scale(1.04); }
+
+.confetti { position: fixed; z-index: 1001; pointer-events: none; border-radius: 2px; }
+
+@media (max-width: 900px) {
+  .game-layout { grid-template-columns: 1fr 220px; gap: 8px; padding: 8px; }
+  .game-title { font-size: 1.2rem; }
+  .card { padding: 10px; }
+  .dice-cube { width: 56px; height: 56px; font-size: 2rem; }
+}
+
+@media (max-width: 700px) {
+  .game-layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; }
+  .sidebar { flex-direction: row; overflow-x: auto; gap: 8px; }
+  .sidebar .card { min-width: 200px; flex-shrink: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="game-layout">
+  <div class="game-header">
+    <div class="title-area">
+      <div class="game-logo">🎲</div>
+      <div class="game-title"><span>Verben-Abenteuer</span></div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-pill">📍 Feld <span class="num" id="currentField">0</span></div>
+      <div class="stat-pill">🔄 Runde <span class="num" id="currentRound">1</span></div>
+      <div class="stat-pill">✏️ <span class="num" id="totalTasks">0</span></div>
+      <button class="reset-btn" onclick="resetGame()">🔄 Neu</button>
+    </div>
+  </div>
+
+  <div class="board-area">
+    <div class="board-grid" id="boardGrid"></div>
+    <div class="player-piece" id="playerPiece">🧙</div>
+  </div>
+
+  <div class="sidebar">
+    <div class="card">
+      <div class="card-title">🎲 Lehrkraft würfelt</div>
+      <div class="dice-row">
+        <div class="dice-cube" id="diceCube" onclick="rollDice()">?</div>
+        <button class="dice-btn" id="diceBtn" onclick="rollDice()">🎲<br>Würfeln!</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎯 Schüler-Würfel → Pronomen</div>
+      <div class="pronoun-grid" id="pronounGrid">
+        <div class="pronoun-card" data-num="1"><div class="pronoun-num">1</div><div class="pronoun-label">ich</div></div>
+        <div class="pronoun-card" data-num="2"><div class="pronoun-num">2</div><div class="pronoun-label">du</div></div>
+        <div class="pronoun-card" data-num="3"><div class="pronoun-num">3</div><div class="pronoun-label">er/sie/es</div></div>
+        <div class="pronoun-card" data-num="4"><div class="pronoun-num">4</div><div class="pronoun-label">wir</div></div>
+        <div class="pronoun-card" data-num="5"><div class="pronoun-num">5</div><div class="pronoun-label">ihr</div></div>
+        <div class="pronoun-card" data-num="6"><div class="pronoun-num">6</div><div class="pronoun-label">sie/Sie</div></div>
+      </div>
+    </div>
+
+    <div class="card task-card">
+      <div class="card-title">📝 Aufgabe</div>
+      <div class="task-inner" id="taskContent">
+        <div class="task-waiting">Würfle, um zu starten! 🎲</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="celebration-overlay" id="celebOverlay">
+  <div class="celeb-box">
+    <div class="celeb-emoji">🏆🎉</div>
+    <div class="celeb-title">Runde geschafft!</div>
+    <div class="celeb-text" id="celebText">Super gemacht!</div>
+    <button class="celeb-btn" id="celebBtn" onclick="nextRound()">▶️ Nächste Runde!</button>
+  </div>
+</div>
+
+<script>
+const verbs = [
+  { inf: "machen", st: "mach", em: "🔨" }, { inf: "spielen", st: "spiel", em: "⚽" },
+  { inf: "lernen", st: "lern", em: "📚" }, { inf: "kochen", st: "koch", em: "🍳" },
+  { inf: "hören", st: "hör", em: "🎧" }, { inf: "malen", st: "mal", em: "🎨" },
+  { inf: "tanzen", st: "tanz", em: "💃" }, { inf: "lachen", st: "lach", em: "😂" },
+  { inf: "kaufen", st: "kauf", em: "🛒" }, { inf: "fragen", st: "frag", em: "❓" },
+  { inf: "sagen", st: "sag", em: "💬" }, { inf: "suchen", st: "such", em: "🔍" },
+  { inf: "wohnen", st: "wohn", em: "🏠" }, { inf: "zeigen", st: "zeig", em: "👉" },
+  { inf: "bauen", st: "bau", em: "🏗️" }, { inf: "packen", st: "pack", em: "📦" },
+  { inf: "träumen", st: "träum", em: "💭" }, { inf: "brauchen", st: "brauch", em: "💡" },
+  { inf: "putzen", st: "putz", em: "🧹" }, { inf: "wandern", st: "wander", em: "🥾" },
+  { inf: "reden", st: "red", em: "🗣️" }, { inf: "schauen", st: "schau", em: "👀" },
+  { inf: "rennen", st: "renn", em: "🏃" }, { inf: "singen", st: "sing", em: "🎤" },
+  { inf: "schwimmen", st: "schwimm", em: "🏊" }, { inf: "reisen", st: "reis", em: "✈️" },
+  { inf: "denken", st: "denk", em: "🧠" }, { inf: "wünschen", st: "wünsch", em: "⭐" },
+  { inf: "lieben", st: "lieb", em: "❤️" }, { inf: "staunen", st: "staun", em: "😲" },
+];
+
+const bonusSentences = [
+  "Schreibe einen Satz mit dem Verb!", "Bilde eine Frage mit dem Verb!",
+  "Schreibe einen Satz über die Schule!", "Bilde einen Satz über dein Hobby!",
+  "Schreibe einen Satz über heute!", "Bilde einen Satz über das Wetter!",
+  "Schreibe einen Satz über Essen!", "Bilde einen Satz über Freunde!",
+];
+
+const pronounMap = {
+  1: { p: "ich", e: "e" }, 2: { p: "du", e: "st" }, 3: { p: "er/sie/es", e: "t" },
+  4: { p: "wir", e: "en" }, 5: { p: "ihr", e: "t" }, 6: { p: "sie/Sie", e: "en" },
+};
+
+function conjugate(v, n) {
+  const pm = pronounMap[n]; let st = v.st, e = pm.e;
+  const needsE = /[dtn]$/.test(st) && !st.endsWith("nn") && !st.endsWith("rn");
+  if (needsE && (n===2||n===3||n===5)) e = "e" + e;
+  if (/[szß]$/.test(st) && n===2) e = "t";
+  return pm.p + " " + st + e;
+}
+
+const TOTAL = 34, COLS = 7;
+let fields = [], playerPos = 0, round = 1, taskCount = 0, isRolling = false;
+
+function buildBoard() {
+  fields = [{ type:'start', verb:null, em:'🚀', label:'START' }];
+  const sv = [...verbs].sort(() => Math.random()-0.5);
+  let vi = 0;
+  for (let i=1; i<TOTAL; i++) {
+    const isB = (i%8===0); const v = sv[vi%sv.length]; vi++;
+    fields.push({ type:isB?'bonus':'normal', verb:v, em:isB?'⭐':v.em, label:v.inf, ci:i%7 });
+  }
+  fields.push({ type:'goal', verb:null, em:'🏆', label:'ZIEL' });
+  renderBoard();
+}
+
+function renderBoard() {
+  const g = document.getElementById('boardGrid'); g.innerHTML = '';
+  const rows = Math.ceil(fields.length/COLS);
+  const vis = Array(rows).fill(null).map(() => Array(COLS).fill(null));
+  let fi = 0;
+  for (let r=0; r<rows; r++) for (let c=0; c<COLS; c++) {
+    const ac = (r%2===0)?c:(COLS-1-c);
+    if (fi<fields.length) { vis[r][ac]=fi; fi++; }
+  }
+  for (let r=0; r<rows; r++) for (let c=0; c<COLS; c++) {
+    const idx=vis[r][c]; const d=document.createElement('div');
+    if (idx!==null&&idx!==undefined) {
+      const f=fields[idx]; let cls='field';
+      if (f.type==='start') cls+=' field-start';
+      else if (f.type==='goal') cls+=' field-goal';
+      else if (f.type==='bonus') cls+=' field-bonus';
+      else cls+=` field-c${f.ci}`;
+      d.className=cls; d.id=`field-${idx}`; d.dataset.index=idx;
+      d.innerHTML=`<span class="field-number">${idx}</span><span class="field-emoji">${f.em}</span><span class="field-verb">${f.label}</span>`;
+    } else { d.className='field field-empty'; }
+    g.appendChild(d);
+  }
+  updatePlayerPos(false);
+}
+
+function updatePlayerPos(anim=true) {
+  const p=document.getElementById('playerPiece'), el=document.getElementById(`field-${playerPos}`);
+  if (!el) return;
+  const b=document.querySelector('.board-grid'), br=b.getBoundingClientRect(), fr=el.getBoundingClientRect();
+  p.style.left=(fr.left-br.left+fr.width/2-15)+'px';
+  p.style.top=(fr.top-br.top+fr.height/2-15)+'px';
+  if (anim) { p.classList.add('moving'); setTimeout(()=>p.classList.remove('moving'),500); }
+  document.querySelectorAll('.field').forEach(f=>f.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function rollDice() {
+  if (isRolling) return; isRolling=true;
+  document.getElementById('diceBtn').disabled=true;
+  const cube=document.getElementById('diceCube');
+  cube.classList.add('rolling');
+  let c=0;
+  const iv=setInterval(()=>{
+    cube.textContent=Math.floor(Math.random()*6)+1; c++;
+    if (c>10) { clearInterval(iv); const r=Math.floor(Math.random()*6)+1; cube.textContent=r; cube.classList.remove('rolling'); movePlayer(r); }
+  },70);
+}
+
+function movePlayer(steps) {
+  const t=Math.min(playerPos+steps,fields.length-1); let cur=playerPos;
+  const iv=setInterval(()=>{
+    cur++; if (cur>t) { clearInterval(iv); playerPos=t;
+      document.getElementById('currentField').textContent=playerPos;
+      if (playerPos>=fields.length-1) setTimeout(()=>showCelebration(),400); else showTask();
+      setTimeout(()=>{ isRolling=false; document.getElementById('diceBtn').disabled=false; },200); return;
+    }
+    playerPos=cur; updatePlayerPos(true);
+  },250);
+}
+
+function showTask() {
+  const f=fields[playerPos], tc=document.getElementById('taskContent');
+  if (f.type==='start'||f.type==='goal') { tc.innerHTML='<div class="task-waiting">Würfle weiter! 🎲</div>'; return; }
+  taskCount++; document.getElementById('totalTasks').textContent=taskCount;
+  const v=f.verb;
+  let h=`<div class="task-verb-display">${v.em} ${v.inf}</div><div class="task-instruction">Schüler: Würfelt euer Pronomen! (1-6)</div>`;
+  if (f.type==='bonus') { const s=bonusSentences[Math.floor(Math.random()*bonusSentences.length)]; h+=`<div class="task-bonus-badge">⭐ BONUS: ${s}</div>`; }
+  const fi=fields.indexOf(f);
+  h+=`<button class="show-answer-btn" onclick="showAnswers(${fi})">👁️ Lösung zeigen</button>`;
+  tc.innerHTML=h;
+}
+
+function showAnswers(fi) {
+  const v=fields[fi].verb;
+  let h=`<div class="task-verb-display">${v.em} ${v.inf}</div><div class="answer-grid">`;
+  for (let i=1;i<=6;i++) h+=`<div class="answer-item">${conjugate(v,i)}</div>`;
+  h+='</div>'; document.getElementById('taskContent').innerHTML=h;
+}
+
+function showCelebration() {
+  const ov=document.getElementById('celebOverlay'), txt=document.getElementById('celebText'), btn=document.getElementById('celebBtn');
+  if (round>=3) { txt.textContent='3 Runden geschafft! Ihr seid Verben-Profis! 🌟'; btn.textContent='🔄 Neues Spiel'; btn.onclick=resetGame; }
+  else { txt.textContent=`Runde ${round} von 3 geschafft! Weiter geht's!`; btn.textContent='▶️ Nächste Runde!'; btn.onclick=nextRound; }
+  ov.classList.add('show'); spawnConfetti();
+}
+
+function nextRound() {
+  round++; playerPos=0; document.getElementById('currentRound').textContent=round;
+  const sv=[...verbs].sort(()=>Math.random()-0.5); let vi=0;
+  for (let i=1;i<fields.length-1;i++) { const v=sv[vi%sv.length]; vi++; fields[i].verb=v; fields[i].em=fields[i].type==='bonus'?'⭐':v.em; fields[i].label=v.inf; }
+  renderBoard(); document.getElementById('celebOverlay').classList.remove('show');
+  document.getElementById('currentField').textContent='0';
+  document.getElementById('taskContent').innerHTML=`<div class="task-waiting">Runde ${round} – Los geht's! 🚀</div>`;
+  document.getElementById('diceCube').textContent='?';
+}
+
+function resetGame() {
+  round=1; playerPos=0; taskCount=0; isRolling=false;
+  document.getElementById('currentRound').textContent='1';
+  document.getElementById('currentField').textContent='0';
+  document.getElementById('totalTasks').textContent='0';
+  document.getElementById('celebOverlay').classList.remove('show');
+  document.getElementById('diceCube').textContent='?';
+  document.getElementById('diceBtn').disabled=false;
+  document.getElementById('taskContent').innerHTML='<div class="task-waiting">Würfle, um zu starten! 🎲</div>';
+  buildBoard();
+}
+
+function spawnConfetti() {
+  const cols=['#ff6b35','#ffb800','#22c55e','#3b82f6','#ec4899','#8b5cf6','#14b8a6'];
+  for (let i=0;i<40;i++) setTimeout(()=>{
+    const c=document.createElement('div'); c.className='confetti';
+    c.style.left=Math.random()*100+'vw'; c.style.top='-10px';
+    c.style.background=cols[Math.floor(Math.random()*cols.length)];
+    c.style.width=(Math.random()*8+4)+'px'; c.style.height=(Math.random()*8+4)+'px';
+    c.style.borderRadius=Math.random()>0.5?'50%':'2px';
+    document.body.appendChild(c);
+    const dur=Math.random()*1800+1200;
+    c.animate([{transform:'translateY(0) rotate(0)',opacity:1},{transform:`translateY(${window.innerHeight+20}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:dur,easing:'ease-in'});
+    setTimeout(()=>c.remove(),dur);
+  },i*35);
+}
+
+window.addEventListener('resize',()=>updatePlayerPos(false));
+buildBoard();
+</script>
+</body>
+</html>

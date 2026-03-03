@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die Verben-Meisterschaft 🌟</title>
+    <style>
+        @font-face{font-family:"Nunito";src:url("./assets/fonts/nunito-sans-v19-latin-regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;}
+        @font-face{font-family:"Nunito";src:url("./assets/fonts/nunito-sans-v19-latin-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap;}
+        @font-face{font-family:"Nunito";src:url("./assets/fonts/nunito-sans-v19-latin-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap;}
+        @font-face{font-family:"Nunito";src:url("./assets/fonts/nunito-sans-v19-latin-800.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap;}
+        @font-face{font-family:"Fredoka";src:url("./assets/fonts/fredoka-v17-latin-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap;}
+        @font-face{font-family:"Fredoka";src:url("./assets/fonts/fredoka-v17-latin-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap;}
+        :root{--primary:#FF6B6B;--secondary:#4ECDC4;--accent:#FFE66D;--success:#51CF66;--error:#FF6B6B;--bg-gradient:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%);--card-bg:rgba(255,255,255,0.95);--text-dark:#2D3436;--text-light:#636E72;--shadow:0 10px 40px rgba(0,0,0,0.15);--shadow-hover:0 15px 50px rgba(0,0,0,0.25);}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Nunito',sans-serif;background:var(--bg-gradient);min-height:100vh;color:var(--text-dark);overflow-x:hidden;}
+        .bg-decoration{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;}
+        .bg-shape{position:absolute;border-radius:50%;opacity:0.1;animation:float 20s infinite ease-in-out;}
+        .bg-shape:nth-child(1){width:300px;height:300px;background:#fff;top:-100px;left:-100px;}
+        .bg-shape:nth-child(2){width:200px;height:200px;background:var(--accent);top:50%;right:-50px;animation-delay:-5s;}
+        .bg-shape:nth-child(3){width:150px;height:150px;background:var(--secondary);bottom:10%;left:10%;animation-delay:-10s;}
+        @keyframes float{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-30px) rotate(10deg);}}
+        .container{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:20px;min-height:100vh;}
+        .header{text-align:center;padding:30px 0;animation:slideDown 0.6s ease-out;}
+        @keyframes slideDown{from{opacity:0;transform:translateY(-30px);}to{opacity:1;transform:translateY(0);}}
+        .header h1{font-family:'Fredoka',system-ui,sans-serif;font-size:clamp(2rem,5vw,3rem);color:white;text-shadow:3px 3px 0 rgba(0,0,0,0.2);margin-bottom:10px;}
+        .header .subtitle{color:rgba(255,255,255,0.9);font-size:1.1rem;font-weight:600;}
+        .stats-bar{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin:20px 0;animation:fadeIn 0.8s ease-out 0.2s both;}
+        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+        .stat-item{background:var(--card-bg);padding:12px 25px;border-radius:50px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);font-weight:700;}
+        .stat-icon{font-size:1.5rem;}
+        .stat-value{font-size:1.2rem;color:var(--primary);}
+        .progress-container{background:rgba(255,255,255,0.3);border-radius:50px;height:20px;margin:20px 0;overflow:hidden;box-shadow:inset 0 2px 10px rgba(0,0,0,0.1);}
+        .progress-bar{height:100%;background:linear-gradient(90deg,var(--secondary),var(--success));border-radius:50px;transition:width 0.5s ease;position:relative;}
+        .progress-bar::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.3) 50%,transparent 100%);animation:shimmer 2s infinite;}
+        @keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+        .card{background:var(--card-bg);border-radius:30px;padding:40px;box-shadow:var(--shadow);animation:cardAppear 0.5s ease-out;margin-bottom:20px;}
+        @keyframes cardAppear{from{opacity:0;transform:scale(0.95) translateY(20px);}to{opacity:1;transform:scale(1) translateY(0);}}
+        .menu-title{font-family:'Fredoka',system-ui,sans-serif;font-size:2rem;text-align:center;margin-bottom:30px;color:var(--primary);}
+        .module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
+        .module-card{background:linear-gradient(135deg,#fff 0%,#f8f9fa 100%);border:3px solid transparent;border-radius:20px;padding:25px;cursor:pointer;transition:all 0.3s ease;position:relative;overflow:hidden;}
+        .module-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-hover);border-color:var(--secondary);}
+        .module-icon{font-size:3rem;margin-bottom:15px;}
+        .module-name{font-family:'Fredoka',system-ui,sans-serif;font-size:1.3rem;color:var(--text-dark);margin-bottom:8px;}
+        .module-desc{color:var(--text-light);font-size:0.95rem;line-height:1.5;}
+        .module-badge{position:absolute;top:15px;right:15px;background:var(--accent);color:var(--text-dark);padding:5px 12px;border-radius:20px;font-size:0.8rem;font-weight:700;}
+        .tutorial-title{font-family:'Fredoka',system-ui,sans-serif;font-size:1.5rem;color:var(--primary);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+        .tutorial-step{background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%);border-radius:20px;padding:25px;margin:20px 0;border-left:5px solid var(--secondary);}
+        .tutorial-step h3{color:var(--secondary);margin-bottom:15px;font-size:1.2rem;}
+        .tutorial-step p{line-height:1.8;font-size:1.05rem;}
+        .step-number{display:inline-flex;align-items:center;justify-content:center;width:35px;height:35px;background:var(--secondary);color:white;border-radius:50%;font-weight:800;margin-right:10px;}
+        .pronoun-table{width:100%;border-collapse:separate;border-spacing:0;margin:20px 0;border-radius:15px;overflow:hidden;box-shadow:0 5px 20px rgba(0,0,0,0.1);}
+        .pronoun-table th{background:linear-gradient(135deg,var(--secondary),#45b7aa);color:white;padding:15px;font-weight:700;text-align:center;}
+        .pronoun-table td{padding:15px;text-align:center;border-bottom:1px solid #eee;transition:background 0.3s ease;}
+        .pronoun-table tr:hover td{background:#f8f9fa;}
+        .pronoun-table tr:last-child td{border-bottom:none;}
+        .highlight-ending{color:var(--primary);font-weight:800;font-size:1.2em;}
+        .example-box{background:linear-gradient(135deg,#fff9e6 0%,#fff3cd 100%);border-left:5px solid var(--accent);padding:20px;border-radius:0 15px 15px 0;margin:20px 0;}
+        .example-box h4{color:var(--text-dark);margin-bottom:10px;}
+        .example-sentence{font-size:1.1rem;margin:10px 0;line-height:1.8;}
+        .verb-highlight{background:var(--accent);padding:2px 8px;border-radius:5px;font-weight:700;}
+        .warning-box{background:linear-gradient(135deg,#ffe3e3 0%,#ffc9c9 100%);border-left:5px solid var(--error);padding:20px;border-radius:0 15px 15px 0;margin:20px 0;}
+        .warning-box h4{color:#c92a2a;margin-bottom:10px;}
+        .tip-box{background:linear-gradient(135deg,#d3f9d8 0%,#b2f2bb 100%);border-left:5px solid var(--success);padding:20px;border-radius:0 15px 15px 0;margin:20px 0;}
+        .tip-box h4{color:#2f9e44;margin-bottom:10px;}
+        .mnemonic-card{background:linear-gradient(135deg,#e7f5ff 0%,#d0ebff 100%);border:3px solid #339af0;border-radius:20px;padding:25px;margin:20px 0;text-align:center;}
+        .mnemonic-card h4{color:#1971c2;font-size:1.3rem;margin-bottom:15px;}
+        .mnemonic-card .big-text{font-size:1.5rem;font-weight:800;color:#1864ab;line-height:2;}
+        .practice-inline{background:#f8f9fa;border-radius:15px;padding:20px;margin:15px 0;display:flex;align-items:center;gap:15px;flex-wrap:wrap;}
+        .practice-inline input{padding:10px 15px;border:3px solid #ddd;border-radius:10px;font-size:1.1rem;font-family:'Nunito',sans-serif;width:120px;text-align:center;transition:all 0.3s ease;}
+        .practice-inline input:focus{outline:none;border-color:var(--secondary);}
+        .practice-inline input.correct{border-color:var(--success);background:#d3f9d8;}
+        .practice-inline input.incorrect{border-color:var(--error);background:#ffe3e3;}
+        .check-btn-small{background:var(--secondary);color:white;border:none;padding:10px 20px;border-radius:10px;font-weight:700;cursor:pointer;transition:all 0.3s ease;font-family:'Nunito',sans-serif;}
+        .check-btn-small:hover{transform:scale(1.05);}
+        .tutorial-nav{display:flex;justify-content:center;gap:10px;margin:30px 0 20px 0;flex-wrap:wrap;}
+        .tutorial-nav-btn{background:transparent;border:2px solid var(--secondary);color:var(--secondary);padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;transition:all 0.3s ease;font-family:'Nunito',sans-serif;font-size:0.9rem;}
+        .tutorial-nav-btn.active{background:var(--secondary);color:white;}
+        .tutorial-nav-btn:hover:not(.active){background:rgba(78,205,196,0.1);}
+        .tutorial-page{display:none;}
+        .tutorial-page.active{display:block;animation:fadeIn 0.5s ease;}
+        .sentence-display{font-size:clamp(1.3rem,3vw,1.8rem);text-align:center;padding:30px;background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%);border-radius:20px;margin:25px 0;line-height:1.8;box-shadow:inset 0 2px 10px rgba(0,0,0,0.05);}
+        .blank{display:inline-block;min-width:120px;border-bottom:4px dashed var(--primary);margin:0 5px;color:var(--primary);font-weight:700;padding:5px 15px;background:rgba(255,107,107,0.1);border-radius:10px 10px 0 0;transition:all 0.3s ease;}
+        .blank.filled{border-bottom-style:solid;background:rgba(78,205,196,0.2);border-color:var(--secondary);color:var(--secondary);}
+        .pronoun-hint{display:block;text-align:center;margin-top:15px;padding:15px;background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 100%);border-radius:15px;font-weight:600;}
+        .pronoun-hint .pronoun{color:var(--success);font-size:1.3em;font-weight:800;}
+        .options-container{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:25px;}
+        @media(max-width:600px){.options-container{grid-template-columns:1fr;}}
+        .option-btn{background:linear-gradient(135deg,#fff 0%,#f8f9fa 100%);border:3px solid #e9ecef;border-radius:15px;padding:20px;font-size:1.3rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:all 0.3s ease;}
+        .option-btn:hover:not(:disabled){transform:translateY(-3px);border-color:var(--secondary);box-shadow:0 8px 25px rgba(78,205,196,0.3);}
+        .option-btn.correct{background:linear-gradient(135deg,var(--success),#40c057);border-color:var(--success);color:white;animation:correctPulse 0.5s ease;}
+        @keyframes correctPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+        .option-btn.incorrect{background:linear-gradient(135deg,var(--error),#fa5252);border-color:var(--error);color:white;animation:shake 0.5s ease;}
+        @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-10px);}75%{transform:translateX(10px);}}
+        .option-btn:disabled{cursor:not-allowed;opacity:0.7;}
+        .feedback{text-align:center;padding:20px;border-radius:15px;margin-top:20px;font-weight:700;font-size:1.2rem;animation:feedbackAppear 0.4s ease;}
+        @keyframes feedbackAppear{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
+        .feedback.correct{background:linear-gradient(135deg,#d3f9d8 0%,#b2f2bb 100%);color:#2f9e44;}
+        .feedback.incorrect{background:linear-gradient(135deg,#ffe3e3 0%,#ffc9c9 100%);color:#e03131;}
+        .feedback-emoji{font-size:2rem;display:block;margin-bottom:10px;}
+        .explanation{margin-top:15px;padding:15px;background:rgba(255,255,255,0.5);border-radius:10px;font-weight:500;font-size:1rem;line-height:1.6;}
+        .btn{background:linear-gradient(135deg,var(--primary),#fa5252);color:white;border:none;padding:15px 40px;border-radius:50px;font-size:1.1rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:all 0.3s ease;box-shadow:0 5px 20px rgba(255,107,107,0.4);}
+        .btn:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(255,107,107,0.5);}
+        .btn.secondary{background:linear-gradient(135deg,var(--secondary),#45b7aa);box-shadow:0 5px 20px rgba(78,205,196,0.4);}
+        .btn.secondary:hover{box-shadow:0 8px 30px rgba(78,205,196,0.5);}
+        .btn-group{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-top:25px;}
+        .results-container{text-align:center;}
+        .results-title{font-family:'Fredoka',system-ui,sans-serif;font-size:2.5rem;margin-bottom:20px;}
+        .results-score{font-size:4rem;font-weight:800;color:var(--success);margin:20px 0;}
+        .results-message{font-size:1.3rem;color:var(--text-light);margin-bottom:30px;}
+        .stars-container{font-size:3rem;margin:20px 0;}
+        .star{display:inline-block;animation:starPop 0.5s ease both;}
+        .star:nth-child(1){animation-delay:0.2s;}
+        .star:nth-child(2){animation-delay:0.4s;}
+        .star:nth-child(3){animation-delay:0.6s;}
+        @keyframes starPop{from{opacity:0;transform:scale(0) rotate(-180deg);}to{opacity:1;transform:scale(1) rotate(0);}}
+        .star.empty{filter:grayscale(100%);opacity:0.3;}
+        .streak-display{position:fixed;top:20px;right:20px;background:linear-gradient(135deg,var(--accent),#ffd43b);padding:10px 20px;border-radius:50px;font-weight:700;box-shadow:var(--shadow);animation:bounceIn 0.5s ease;z-index:100;}
+        @keyframes bounceIn{0%{transform:scale(0);}50%{transform:scale(1.2);}100%{transform:scale(1);}}
+        .streak-display.hidden{display:none;}
+        .level-up-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;z-index:1000;}
+        .level-up-card{background:var(--card-bg);padding:50px;border-radius:30px;text-align:center;animation:levelUpPop 0.5s ease;}
+        @keyframes levelUpPop{from{transform:scale(0) rotate(-10deg);}to{transform:scale(1) rotate(0);}}
+        .level-up-icon{font-size:5rem;margin-bottom:20px;animation:bounce 1s infinite;}
+        @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+        .level-up-title{font-family:'Fredoka',system-ui,sans-serif;font-size:2rem;color:var(--success);}
+        .timer-container{text-align:center;margin:15px 0;}
+        .timer{font-size:1.5rem;font-weight:700;color:var(--text-light);}
+        .timer.warning{color:var(--error);animation:pulse 1s infinite;}
+        @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+        .level-indicator{display:flex;justify-content:center;gap:10px;margin-bottom:20px;}
+        .level-dot{width:40px;height:40px;border-radius:50%;background:#e9ecef;display:flex;align-items:center;justify-content:center;font-weight:700;color:#adb5bd;transition:all 0.3s ease;}
+        .level-dot.active{background:var(--secondary);color:white;transform:scale(1.1);}
+        .level-dot.completed{background:var(--success);color:white;}
+        .hidden{display:none !important;}
+        .confetti{position:fixed;width:10px;height:10px;background:var(--accent);animation:confettiFall 3s ease-out forwards;z-index:1000;pointer-events:none;}
+        @keyframes confettiFall{0%{transform:translateY(-100vh) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
+        @media(min-width:768px) and (max-width:1024px){.container{padding:30px;}.option-btn{padding:25px;font-size:1.4rem;}.sentence-display{font-size:1.6rem;padding:35px;}}
+    </style>
+</head>
+<body>
+    <div class="bg-decoration"><div class="bg-shape"></div><div class="bg-shape"></div><div class="bg-shape"></div></div>
+    <div class="streak-display hidden" id="streakDisplay">🔥 <span id="streakCount">0</span> richtig!</div>
+    <div class="container">
+        <header class="header">
+            <h1>🌟 Die Verben-Meisterschaft 🌟</h1>
+            <p class="subtitle">Lerne spielend die richtigen Verb-Endungen!</p>
+        </header>
+        <div class="stats-bar" id="statsBar">
+            <div class="stat-item"><span class="stat-icon">⭐</span><span class="stat-value" id="totalPoints">0</span><span>Punkte</span></div>
+            <div class="stat-item"><span class="stat-icon">✅</span><span class="stat-value" id="correctCount">0</span><span>Richtig</span></div>
+        </div>
+        <main id="mainContent">
+            <div class="card" id="menuScreen">
+                <h2 class="menu-title">🎮 Wähle ein Modul</h2>
+                <div class="module-grid">
+                    <div class="module-card" onclick="startModule('tutorial')">
+                        <span class="module-icon">📚</span>
+                        <h3 class="module-name">Lernstunde</h3>
+                        <p class="module-desc">Lerne Schritt für Schritt die Verb-Endungen mit Erklärungen und Beispielen.</p>
+                        <span class="module-badge">Start hier!</span>
+                    </div>
+                    <div class="module-card" onclick="startModule('practice')">
+                        <span class="module-icon">🎯</span>
+                        <h3 class="module-name">Übungsmodus</h3>
+                        <p class="module-desc">Übe in 5 Leveln (je 10 Fragen). Mit jedem Level wird es schwerer!</p>
+                    </div>
+                    <div class="module-card" onclick="startModule('challenge')">
+                        <span class="module-icon">⚡</span>
+                        <h3 class="module-name">Herausforderung</h3>
+                        <p class="module-desc">10 Sätze auf Zeit! Wie viele schaffst du in 2 Minuten?</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card hidden" id="tutorialScreen">
+                <div class="tutorial-nav">
+                    <button class="tutorial-nav-btn active" onclick="showTutorialPage(1)">1. Was ist ein Verb?</button>
+                    <button class="tutorial-nav-btn" onclick="showTutorialPage(2)">2. Stamm & Endung</button>
+                    <button class="tutorial-nav-btn" onclick="showTutorialPage(3)">3. Die Endungen</button>
+                    <button class="tutorial-nav-btn" onclick="showTutorialPage(4)">4. Merkhilfen</button>
+                    <button class="tutorial-nav-btn" onclick="showTutorialPage(5)">5. Übung</button>
+                </div>
+                <div class="tutorial-page active" id="tutorialPage1">
+                    <h2 class="tutorial-title">📚 Was ist ein Verb?</h2>
+                    <div class="tutorial-step"><h3><span class="step-number">1</span> Das Verb ist ein Tu-Wort</h3><p>Ein <strong>Verb</strong> beschreibt, was jemand <strong>tut</strong> oder was <strong>passiert</strong>.<br><br>Frage dich immer: <em>"Was macht die Person?"</em> – Die Antwort ist das Verb!</p></div>
+                    <div class="example-box"><h4>🎯 Beispiele:</h4><p class="example-sentence"><span class="verb-highlight">spielen</span> – Er spielt.<br><span class="verb-highlight">lernen</span> – Sie lernt.<br><span class="verb-highlight">lachen</span> – Es lacht.</p></div>
+                    <div class="tutorial-step"><h3><span class="step-number">2</span> Das Verb in der Grundform</h3><p>Die Grundform endet immer auf <strong>-en</strong> oder <strong>-n</strong>:</p></div>
+                    <div class="example-box"><h4>📖 Verben in der Grundform:</h4><p class="example-sentence">mach<span class="verb-highlight">en</span>, spiel<span class="verb-highlight">en</span>, lern<span class="verb-highlight">en</span>, hör<span class="verb-highlight">en</span></p></div>
+                    <div class="btn-group"><button class="btn secondary" onclick="showMenu()">← Menü</button><button class="btn" onclick="showTutorialPage(2)">Weiter →</button></div>
+                </div>
+                <div class="tutorial-page" id="tutorialPage2">
+                    <h2 class="tutorial-title">🔧 Stamm und Endung</h2>
+                    <div class="tutorial-step"><h3><span class="step-number">1</span> Jedes Verb hat zwei Teile</h3><p>🔹 Der <strong>Stamm</strong> – bleibt gleich<br>🔹 Die <strong>Endung</strong> – verändert sich</p></div>
+                    <div class="example-box"><h4>🔍 So findest du den Stamm:</h4><p class="example-sentence"><strong>spiel</strong><span style="text-decoration:line-through;color:#999;">en</span> → Stamm = <span class="verb-highlight">spiel</span><br><strong>lern</strong><span style="text-decoration:line-through;color:#999;">en</span> → Stamm = <span class="verb-highlight">lern</span></p></div>
+                    <div class="practice-inline"><span><strong>Übung:</strong> Stamm von "tanzen"?</span><input type="text" id="stammUebung1" placeholder="?"><button class="check-btn-small" onclick="checkStammUebung('stammUebung1','tanz')">Prüfen</button></div>
+                    <div class="practice-inline"><span><strong>Übung:</strong> Stamm von "kochen"?</span><input type="text" id="stammUebung2" placeholder="?"><button class="check-btn-small" onclick="checkStammUebung('stammUebung2','koch')">Prüfen</button></div>
+                    <div class="btn-group"><button class="btn secondary" onclick="showTutorialPage(1)">← Zurück</button><button class="btn" onclick="showTutorialPage(3)">Weiter →</button></div>
+                </div>
+                <div class="tutorial-page" id="tutorialPage3">
+                    <h2 class="tutorial-title">📋 Die Verb-Endungen</h2>
+                    <table class="pronoun-table">
+                        <thead><tr><th>Pronomen</th><th>Endung</th><th>Beispiel</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>ich</strong></td><td><span class="highlight-ending">-e</span></td><td>ich spiel<span class="highlight-ending">e</span></td></tr>
+                            <tr><td><strong>du</strong></td><td><span class="highlight-ending">-st</span></td><td>du spiel<span class="highlight-ending">st</span></td></tr>
+                            <tr><td><strong>er/sie/es</strong></td><td><span class="highlight-ending">-t</span></td><td>er spiel<span class="highlight-ending">t</span></td></tr>
+                            <tr><td><strong>wir</strong></td><td><span class="highlight-ending">-en</span></td><td>wir spiel<span class="highlight-ending">en</span></td></tr>
+                            <tr><td><strong>ihr</strong></td><td><span class="highlight-ending">-t</span></td><td>ihr spiel<span class="highlight-ending">t</span></td></tr>
+                            <tr><td><strong>sie</strong></td><td><span class="highlight-ending">-en</span></td><td>sie spiel<span class="highlight-ending">en</span></td></tr>
+                        </tbody>
+                    </table>
+                    <div class="tip-box"><h4>💡 Merke:</h4><p>🔹 <strong>er/sie/es</strong> und <strong>ihr</strong> = <strong>-t</strong><br>🔹 <strong>wir</strong> und <strong>sie</strong> = <strong>-en</strong></p></div>
+                    <div class="btn-group"><button class="btn secondary" onclick="showTutorialPage(2)">← Zurück</button><button class="btn" onclick="showTutorialPage(4)">Weiter →</button></div>
+                </div>
+                <div class="tutorial-page" id="tutorialPage4">
+                    <h2 class="tutorial-title">🧠 Merkhilfen</h2>
+                    <div class="mnemonic-card"><h4>🎵 Der Endungen-Rap</h4><p class="big-text">"ICH mit E,<br>DU mit ST,<br>ER-SIE-ES mit T,<br>WIR und SIE mit EN,<br>IHR mit T – jetzt kann's losgeh'n!"</p></div>
+                    <div class="btn-group"><button class="btn secondary" onclick="showTutorialPage(3)">← Zurück</button><button class="btn" onclick="showTutorialPage(5)">Weiter →</button></div>
+                </div>
+                <div class="tutorial-page" id="tutorialPage5">
+                    <h2 class="tutorial-title">✏️ Jetzt üben!</h2>
+                    <div class="tutorial-step" style="border-left-color:var(--primary);"><h3 style="color:var(--primary);">Übung: "machen"</h3>
+                        <div class="practice-inline"><span><strong>ich</strong></span><input type="text" id="uebung1" placeholder="mach..."><button class="check-btn-small" onclick="checkTutorialExercise('uebung1','mache')">✓</button><span id="feedback1"></span></div>
+                        <div class="practice-inline"><span><strong>du</strong></span><input type="text" id="uebung2" placeholder="mach..."><button class="check-btn-small" onclick="checkTutorialExercise('uebung2','machst')">✓</button><span id="feedback2"></span></div>
+                        <div class="practice-inline"><span><strong>er</strong></span><input type="text" id="uebung3" placeholder="mach..."><button class="check-btn-small" onclick="checkTutorialExercise('uebung3','macht')">✓</button><span id="feedback3"></span></div>
+                    </div>
+                    <div class="tip-box"><h4>🎉 Geschafft!</h4><p>Jetzt kannst du im <strong>Übungsmodus</strong> weiter trainieren!</p></div>
+                    <div class="btn-group"><button class="btn secondary" onclick="showMenu()">Menü</button><button class="btn" onclick="startModule('practice')">Jetzt üben! →</button></div>
+                </div>
+            </div>
+
+            <div class="card hidden" id="gameScreen">
+                <div class="level-indicator hidden" id="levelIndicator">
+                    <div class="level-dot" id="levelDot1">1</div>
+                    <div class="level-dot" id="levelDot2">2</div>
+                    <div class="level-dot" id="levelDot3">3</div>
+                    <div class="level-dot" id="levelDot4">4</div>
+                    <div class="level-dot" id="levelDot5">5</div>
+                </div>
+                <div class="timer-container hidden" id="timerContainer"><span class="timer" id="timer">⏱️ 02:00</span></div>
+                <div class="progress-container"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+                <p style="text-align:center;margin-bottom:15px;color:var(--text-light);">Frage <span id="currentQuestion">1</span> von <span id="totalQuestions">10</span></p>
+                <div class="sentence-display" id="sentenceDisplay"></div>
+                <div class="pronoun-hint" id="pronounHint">🔍 Pronomen: <span class="pronoun" id="pronounDisplay"></span> → Welche Endung?</div>
+                <div class="options-container" id="optionsContainer"></div>
+                <div class="feedback hidden" id="feedback"></div>
+                <div class="btn-group" id="gameButtons"><button class="btn secondary" onclick="showMenu()">← Menü</button><button class="btn hidden" id="nextBtn" onclick="nextQuestion()">Weiter →</button></div>
+            </div>
+
+            <div class="card hidden" id="resultsScreen">
+                <div class="results-container">
+                    <h2 class="results-title" id="resultsTitle">🎉 Super!</h2>
+                    <div class="stars-container" id="starsContainer"></div>
+                    <div class="results-score" id="resultsScore">8/10</div>
+                    <p class="results-message" id="resultsMessage">Toll gemacht!</p>
+                    <div style="background:#f8f9fa;padding:20px;border-radius:15px;margin:20px 0;">
+                        <p><strong>Punkte:</strong> <span id="earnedPoints">0</span> ⭐</p>
+                        <p><strong>Längste Serie:</strong> <span id="longestStreak">0</span> 🔥</p>
+                        <p><strong>Zeit:</strong> <span id="timeTaken">0:00</span> ⏱️</p>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn secondary" onclick="showMenu()">← Menü</button>
+                        <button class="btn" onclick="retryCurrentModule()">🔄 Nochmal</button>
+                        <button class="btn hidden" id="nextLevelBtn" onclick="nextLevel()">Nächstes Level →</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<script>
+// ==================== GAME DATA ====================
+const verbs = [
+  {infinitive:'machen'},{infinitive:'spielen'},{infinitive:'lernen'},{infinitive:'hören'},{infinitive:'sagen'},
+  {infinitive:'fragen'},{infinitive:'kaufen'},{infinitive:'suchen'},{infinitive:'wohnen'},{infinitive:'kochen'},
+  {infinitive:'tanzen'},{infinitive:'lachen'},{infinitive:'weinen'},{infinitive:'zeigen'},{infinitive:'brauchen'},
+  {infinitive:'glauben'},{infinitive:'schauen'},{infinitive:'bauen'},{infinitive:'putzen'},{infinitive:'packen'},
+  {infinitive:'legen'},{infinitive:'stellen'},{infinitive:'holen'},{infinitive:'schenken'},{infinitive:'danken'},
+  {infinitive:'reden'},{infinitive:'malen'},{infinitive:'klettern'},{infinitive:'basteln'},{infinitive:'sammeln'},
+  {infinitive:'räumen'},{infinitive:'träumen'},{infinitive:'staunen'},{infinitive:'dauern'},{infinitive:'feiern'},
+  {infinitive:'wandern'},{infinitive:'wundern'},{infinitive:'ändern'},{infinitive:'fördern'},{infinitive:'lieben'},
+  {infinitive:'leben'},{infinitive:'üben'},{infinitive:'kleben'},{infinitive:'loben'},{infinitive:'toben'},
+  {infinitive:'proben'},{infinitive:'grüßen'},{infinitive:'passen'},{infinitive:'warten'},{infinitive:'arbeiten'},
+  {infinitive:'öffnen'},{infinitive:'rechnen'},{infinitive:'zeichnen'},{infinitive:'regnen'},{infinitive:'atmen'}
+];
+
+const VERB_BY_INF = new Map(verbs.map(v=>[v.infinitive,v]));
+
+const PRONOUNS = [
+  {key:'ich',display:'ich',person:'1. Person Singular'},
+  {key:'du',display:'du',person:'2. Person Singular'},
+  {key:'er',display:'er',person:'3. Person Singular'},
+  {key:'sie_sg',display:'sie',person:'3. Person Singular'},
+  {key:'es',display:'es',person:'3. Person Singular'},
+  {key:'wir',display:'wir',person:'1. Person Plural'},
+  {key:'ihr',display:'ihr',person:'2. Person Plural'},
+  {key:'sie_pl',display:'sie',person:'3. Person Plural'}
+];
+
+const PRONOUN_BY_KEY = new Map(PRONOUNS.map(p=>[p.key,p]));
+const RANDOM_PRONOUN_KEYS = ['ich','du','er','es','wir','ihr','sie_pl'];
+
+const sentenceTemplates = {
+  easy: [
+    {template:'{pronoun} {verb} gern Musik.',verbInf:'hören'},
+    {template:'{pronoun} {verb} heute Pizza.',verbInf:'kochen'},
+    {template:'{pronoun} {verb} im Garten.',verbInf:'spielen'},
+    {template:'{pronoun} {verb} Deutsch.',verbInf:'lernen'},
+    {template:'{pronoun} {verb} das gut.',verbInf:'machen'},
+    {template:'{pronoun} {verb} das Buch.',verbInf:'suchen'},
+    {template:'{pronoun} {verb} in Berlin.',verbInf:'wohnen'},
+    {template:'{pronoun} {verb} laut.',verbInf:'lachen'},
+    {template:'{pronoun} {verb} viel.',verbInf:'fragen'},
+    {template:'{pronoun} {verb} ein Eis.',verbInf:'kaufen'},
+    {template:'{pronoun} {verb} ein Bild.',verbInf:'malen'},
+    {template:'{pronoun} {verb} gern.',verbInf:'tanzen'},
+    {template:'{pronoun} {verb} die Hausaufgaben.',verbInf:'machen'},
+    {template:'{pronoun} {verb} Fußball.',verbInf:'spielen'},
+    {template:'{pronoun} {verb} Mathe.',verbInf:'lernen'},
+    {template:'{pronoun} {verb} die Antwort.',verbInf:'sagen'},
+    {template:'{pronoun} {verb} den Lehrer.',verbInf:'fragen'},
+    {template:'{pronoun} {verb} die Tafel.',verbInf:'putzen'},
+    {template:'{pronoun} {verb} leise.',verbInf:'reden'},
+    {template:'{pronoun} {verb} das Zimmer.',verbInf:'putzen'},
+    {template:'{pronoun} {verb} den Koffer.',verbInf:'packen'},
+    {template:'{pronoun} {verb} die Blumen.',verbInf:'suchen'},
+    {template:'{pronoun} {verb} das Abendessen.',verbInf:'kochen'},
+    {template:'{pronoun} {verb} vor Freude.',verbInf:'lachen'},
+    {template:'{pronoun} {verb} herzlich.',verbInf:'danken'},
+    {template:'{pronoun} {verb} ein Geschenk.',verbInf:'schenken'},
+    {template:'{pronoun} {verb} das nicht.',verbInf:'glauben'},
+    {template:'{pronoun} {verb} einen Film.',verbInf:'schauen'},
+    {template:'{pronoun} {verb} das Foto.',verbInf:'zeigen'},
+    {template:'{pronoun} {verb} Basketball.',verbInf:'spielen'},
+    {template:'{pronoun} {verb} Englisch.',verbInf:'lernen'},
+    {template:'{pronoun} {verb} ein Sandwich.',verbInf:'machen'},
+    {template:'{pronoun} {verb} die Schlüssel.',verbInf:'suchen'},
+    {template:'{pronoun} {verb} in München.',verbInf:'wohnen'},
+    {template:'{pronoun} {verb} oft.',verbInf:'lachen'},
+    {template:'{pronoun} {verb} einen Turm.',verbInf:'bauen'},
+    {template:'{pronoun} {verb} auf Bäume.',verbInf:'klettern'},
+    {template:'{pronoun} {verb} mit Papier.',verbInf:'basteln'},
+    {template:'{pronoun} {verb} Briefmarken.',verbInf:'sammeln'},
+    {template:'{pronoun} {verb} das Zimmer auf.',verbInf:'räumen'},
+    {template:'{pronoun} {verb} von den Ferien.',verbInf:'träumen'},
+    {template:'{pronoun} {verb} über das Geschenk.',verbInf:'staunen'},
+    {template:'{pronoun} {verb} im Wald.',verbInf:'wandern'},
+    {template:'{pronoun} {verb} die Tiere.',verbInf:'lieben'},
+    {template:'{pronoun} {verb} in Deutschland.',verbInf:'leben'},
+    {template:'{pronoun} {verb} jeden Tag.',verbInf:'üben'},
+    {template:'{pronoun} {verb} das Bild.',verbInf:'kleben'},
+    {template:'{pronoun} {verb} den Schüler.',verbInf:'loben'},
+    {template:'{pronoun} {verb} im Garten.',verbInf:'toben'},
+    {template:'{pronoun} {verb} für das Konzert.',verbInf:'proben'},
+    {template:'{pronoun} {verb} die Nachbarn.',verbInf:'grüßen'},
+    {template:'{pronoun} {verb} die Natur.',verbInf:'lieben'},
+    {template:'{pronoun} {verb} glücklich.',verbInf:'leben'},
+    {template:'{pronoun} {verb} die Karten.',verbInf:'legen'},
+    {template:'{pronoun} {verb} das Heft.',verbInf:'holen'},
+    {template:'{pronoun} {verb} die Tasche.',verbInf:'holen'},
+    {template:'{pronoun} {verb} das Glas.',verbInf:'stellen'},
+    {template:'{pronoun} {verb} die Regeln.',verbInf:'ändern'},
+    {template:'{pronoun} {verb} die Kinder.',verbInf:'fördern'},
+    {template:'{pronoun} {verb} die Zähne.',verbInf:'putzen'},
+    {template:'{pronoun} {verb} die Aufgabe.',verbInf:'üben'},
+    {template:'{pronoun} {verb} auf den Bus.',verbInf:'warten'},
+    {template:'{pronoun} {verb} fleißig.',verbInf:'arbeiten'},
+    {template:'{pronoun} {verb} das Fenster.',verbInf:'öffnen'},
+    {template:'{pronoun} {verb} die Aufgabe.',verbInf:'rechnen'},
+    {template:'{pronoun} {verb} ein Haus.',verbInf:'zeichnen'},
+    {template:'{pronoun} {verb} tief.',verbInf:'atmen'},
+    {template:'{pronoun} {verb} Tennis.',verbInf:'spielen'},
+    {template:'{pronoun} {verb} Kuchen.',verbInf:'kochen'},
+    {template:'{pronoun} {verb} Gitarre.',verbInf:'üben'},
+    {template:'{pronoun} {verb} das Radio.',verbInf:'hören'},
+    {template:'{pronoun} {verb} die Vokabeln.',verbInf:'lernen'}
+  ],
+  medium: [
+    {template:'Am Morgen {verb} {pronoun} das Frühstück.',verbInf:'machen'},
+    {template:'In der Schule {verb} {pronoun} viel.',verbInf:'lernen'},
+    {template:'Jeden Tag {verb} {pronoun} Fußball.',verbInf:'spielen'},
+    {template:'Am Wochenende {verb} {pronoun} Kuchen.',verbInf:'kochen'},
+    {template:'Abends {verb} {pronoun} Musik.',verbInf:'hören'},
+    {template:'Im Park {verb} {pronoun} laut.',verbInf:'lachen'},
+    {template:'Auf der Party {verb} {pronoun} viel.',verbInf:'tanzen'},
+    {template:'Im Unterricht {verb} {pronoun} oft.',verbInf:'fragen'},
+    {template:'Beim Essen {verb} {pronoun} viel.',verbInf:'reden'},
+    {template:'Zu Hause {verb} {pronoun} gern.',verbInf:'kochen'},
+    {template:'Nach der Schule {verb} {pronoun} Hausaufgaben.',verbInf:'machen'},
+    {template:'Am Nachmittag {verb} {pronoun} Freunde.',verbInf:'suchen'},
+    {template:'Am Abend {verb} {pronoun} einen Film.',verbInf:'schauen'},
+    {template:'Im Supermarkt {verb} {pronoun} Obst.',verbInf:'kaufen'},
+    {template:'In der Küche {verb} {pronoun} das Mittagessen.',verbInf:'kochen'},
+    {template:'Im Garten {verb} {pronoun} die Blumen.',verbInf:'suchen'},
+    {template:'Auf dem Spielplatz {verb} {pronoun} mit Freunden.',verbInf:'spielen'},
+    {template:'Am Strand {verb} {pronoun} eine Sandburg.',verbInf:'bauen'},
+    {template:'Heute {verb} {pronoun} sehr lange.',verbInf:'lernen'},
+    {template:'Manchmal {verb} {pronoun} zu laut.',verbInf:'reden'},
+    {template:'Oft {verb} {pronoun} zusammen.',verbInf:'spielen'},
+    {template:'Fleißig {verb} {pronoun} für die Prüfung.',verbInf:'lernen'},
+    {template:'In den Ferien {verb} {pronoun} viel.',verbInf:'spielen'},
+    {template:'Am Montag {verb} {pronoun} Sport.',verbInf:'machen'},
+    {template:'Um acht Uhr {verb} {pronoun} Frühstück.',verbInf:'machen'},
+    {template:'In der Pause {verb} {pronoun} draußen.',verbInf:'spielen'},
+    {template:'Am Dienstag {verb} {pronoun} Tennis.',verbInf:'spielen'},
+    {template:'Im Winter {verb} {pronoun} drinnen.',verbInf:'spielen'},
+    {template:'Im Urlaub {verb} {pronoun} viel.',verbInf:'feiern'},
+    {template:'Zu Weihnachten {verb} {pronoun} Geschenke.',verbInf:'schenken'},
+    {template:'Zum Geburtstag {verb} {pronoun} Kuchen.',verbInf:'kochen'},
+    {template:'In der Stadt {verb} {pronoun} neue Schuhe.',verbInf:'kaufen'},
+    {template:'Im Zoo {verb} {pronoun} die Tiere.',verbInf:'schauen'},
+    {template:'Im Kino {verb} {pronoun} einen Film.',verbInf:'schauen'},
+    {template:'Im Museum {verb} {pronoun} die Bilder.',verbInf:'schauen'},
+    {template:'Auf dem Markt {verb} {pronoun} Gemüse.',verbInf:'kaufen'},
+    {template:'Am Wochenende {verb} {pronoun} im Wald.',verbInf:'wandern'},
+    {template:'Jeden Morgen {verb} {pronoun} Klavier.',verbInf:'üben'},
+    {template:'Nach dem Essen {verb} {pronoun} den Tisch.',verbInf:'räumen'},
+    {template:'Am Nachmittag {verb} {pronoun} von der Zukunft.',verbInf:'träumen'},
+    {template:'Beim Konzert {verb} {pronoun} lange.',verbInf:'proben'},
+    {template:'Im Sommer {verb} {pronoun} viel.',verbInf:'feiern'},
+    {template:'Im Frühling {verb} {pronoun} die Blumen.',verbInf:'lieben'},
+    {template:'Auf dem Land {verb} {pronoun} glücklich.',verbInf:'leben'},
+    {template:'Am Abend {verb} {pronoun} die Nachbarn.',verbInf:'grüßen'},
+    {template:'Im Garten {verb} {pronoun} wild.',verbInf:'toben'},
+    {template:'Nach dem Sport {verb} {pronoun} das Zimmer auf.',verbInf:'räumen'},
+    {template:'Im Bus {verb} {pronoun} oft Musik.',verbInf:'hören'},
+    {template:'Nach der Stunde {verb} {pronoun} die Hefte.',verbInf:'holen'},
+    {template:'Im Klassenzimmer {verb} {pronoun} die Stühle.',verbInf:'stellen'},
+    {template:'In der Gruppe {verb} {pronoun} leise.',verbInf:'reden'},
+    {template:'Am Nachmittag {verb} {pronoun} schnell die Tasche.',verbInf:'packen'},
+    {template:'Vor dem Spiel {verb} {pronoun} kurz.',verbInf:'üben'},
+    {template:'Nach dem Film {verb} {pronoun} über die Szene.',verbInf:'reden'},
+    {template:'In der Stadt {verb} {pronoun} ein Geschenk.',verbInf:'kaufen'},
+    {template:'Auf dem Tisch {verb} {pronoun} die Karten.',verbInf:'legen'},
+    {template:'Im Team {verb} {pronoun} die Kinder.',verbInf:'fördern'},
+    {template:'Manchmal {verb} {pronoun} die Regeln.',verbInf:'ändern'},
+    {template:'An der Haltestelle {verb} {pronoun} auf den Bus.',verbInf:'warten'},
+    {template:'Im Büro {verb} {pronoun} den ganzen Tag.',verbInf:'arbeiten'},
+    {template:'Morgens {verb} {pronoun} das Fenster.',verbInf:'öffnen'},
+    {template:'In Mathe {verb} {pronoun} schwierige Aufgaben.',verbInf:'rechnen'},
+    {template:'Im Kunstunterricht {verb} {pronoun} Bilder.',verbInf:'zeichnen'},
+    {template:'Beim Sport {verb} {pronoun} tief.',verbInf:'atmen'},
+    {template:'Heute Abend {verb} {pronoun} Spaghetti.',verbInf:'kochen'},
+    {template:'Am Mittwoch {verb} {pronoun} Volleyball.',verbInf:'spielen'},
+    {template:'Im Herbst {verb} {pronoun} bunte Blätter.',verbInf:'sammeln'},
+    {template:'Am Freitag {verb} {pronoun} die Woche.',verbInf:'feiern'},
+    {template:'In der Bibliothek {verb} {pronoun} leise.',verbInf:'reden'},
+    {template:'Nach dem Unterricht {verb} {pronoun} auf dem Schulhof.',verbInf:'spielen'}
+  ],
+  hard: [
+    {template:'{pronoun} {verb} nicht, weil es regnet.',verbInf:'spielen'},
+    {template:'{pronoun} {verb} viel, weil die Prüfung kommt.',verbInf:'lernen'},
+    {template:'{pronoun} {verb} laut, weil die Musik gut ist.',verbInf:'lachen'},
+    {template:'{pronoun} {verb} fleißig, weil morgen Schule ist.',verbInf:'üben'},
+    {template:'{pronoun} {verb} schnell, weil der Bus kommt.',verbInf:'packen'},
+    {template:'Wenn es regnet, {verb} {pronoun} drinnen.',verbInf:'spielen'},
+    {template:'Wenn die Sonne scheint, {verb} {pronoun} draußen.',verbInf:'spielen'},
+    {template:'Wenn der Film gut ist, {verb} {pronoun} lange.',verbInf:'schauen'},
+    {template:'Obwohl es spät ist, {verb} {pronoun} noch.',verbInf:'lernen'},
+    {template:'Obwohl es kalt ist, {verb} {pronoun} draußen.',verbInf:'spielen'},
+    {template:'Obwohl es regnet, {verb} {pronoun} im Wald.',verbInf:'wandern'},
+    {template:'Warum {verb} {pronoun} so laut?',verbInf:'lachen'},
+    {template:'Wie lange {verb} {pronoun} schon hier?',verbInf:'wohnen'},
+    {template:'Was {verb} {pronoun} am liebsten?',verbInf:'kochen'},
+    {template:'Wann {verb} {pronoun} die Party?',verbInf:'feiern'},
+    {template:'Wo {verb} {pronoun} am liebsten?',verbInf:'spielen'},
+    {template:'Mit wem {verb} {pronoun} heute?',verbInf:'lernen'},
+    {template:'Wie oft {verb} {pronoun} Sport?',verbInf:'machen'},
+    {template:'Warum {verb} {pronoun} nicht mit?',verbInf:'tanzen'},
+    {template:'Seit wann {verb} {pronoun} Klavier?',verbInf:'üben'},
+    {template:'{pronoun} {verb} immer so viel, dass alle müde werden.',verbInf:'reden'},
+    {template:'Morgens um sieben {verb} {pronoun} schon Frühstück.',verbInf:'machen'},
+    {template:'Im Sommer {verb} {pronoun} jeden Tag im Park.',verbInf:'spielen'},
+    {template:'Nach dem Unterricht {verb} {pronoun} meistens Fußball.',verbInf:'spielen'},
+    {template:'Vor dem Essen {verb} {pronoun} den Tisch.',verbInf:'räumen'},
+    {template:'Nachdem der Film endet, {verb} {pronoun} das Zimmer auf.',verbInf:'räumen'},
+    {template:'Während der Pause {verb} {pronoun} ein Brötchen.',verbInf:'holen'},
+    {template:'Wegen der Hitze {verb} {pronoun} viel Wasser.',verbInf:'brauchen'},
+    {template:'Bevor die Schule beginnt, {verb} {pronoun} noch.',verbInf:'üben'},
+    {template:'Damit alles klappt, {verb} {pronoun} viel.',verbInf:'üben'},
+    {template:'Falls es regnet, {verb} {pronoun} drinnen.',verbInf:'spielen'},
+    {template:'Sobald die Schule aus ist, {verb} {pronoun} draußen.',verbInf:'spielen'},
+    {template:'Solange es hell ist, {verb} {pronoun} draußen.',verbInf:'spielen'},
+    {template:'Je mehr {pronoun} {verb}, desto besser.',verbInf:'üben'},
+    {template:'Entweder heute oder morgen {verb} {pronoun}.',verbInf:'feiern'},
+    {template:'Der Junge, der dort {verb}, ist mein Freund.',verbInf:'spielen',pronounOverride:'er'},
+    {template:'Das Mädchen, das laut {verb}, heißt Anna.',verbInf:'lachen',pronounOverride:'es'},
+    {template:'Die Kinder, die im Park {verb}, sind glücklich.',verbInf:'spielen',pronounOverride:'sie_pl'},
+    {template:'Der Mann, der hier {verb}, ist mein Vater.',verbInf:'wohnen',pronounOverride:'er'},
+    {template:'Die Frau, die dort {verb}, ist sehr nett.',verbInf:'wohnen',pronounOverride:'sie_sg'},
+    {template:'Das Kind, das gerade {verb}, ist müde.',verbInf:'weinen',pronounOverride:'es'},
+    {template:'Die Schüler, die fleißig {verb}, bekommen gute Noten.',verbInf:'lernen',pronounOverride:'sie_pl'},
+    {template:'Der Hund, der laut {verb}, gehört mir.',verbInf:'toben',pronounOverride:'er'},
+    {template:'Die Katze, die dort {verb}, ist süß.',verbInf:'spielen',pronounOverride:'sie_sg'},
+    {template:'Das Baby, das gerade {verb}, ist hungrig.',verbInf:'weinen',pronounOverride:'es'},
+    {template:'Ich glaube, dass {pronoun} gut {verb}.',verbInf:'tanzen'},
+    {template:'Er sagt, dass {pronoun} viel {verb}.',verbInf:'lernen'},
+    {template:'Weil es so spannend ist, {verb} {pronoun} ganz genau.',verbInf:'schauen'},
+    {template:'Obwohl es leise sein soll, {verb} {pronoun} zu laut.',verbInf:'reden'},
+    {template:'Falls nötig, {verb} {pronoun} nochmal.',verbInf:'üben'},
+    {template:'Bevor es losgeht, {verb} {pronoun} schnell den Rucksack.',verbInf:'packen'},
+    {template:'Wenn es chaotisch ist, {verb} {pronoun} das Zimmer.',verbInf:'räumen'},
+    {template:'Wann genau {verb} {pronoun} die Frage?',verbInf:'stellen'},
+    {template:'Wie oft {verb} {pronoun} die Regeln?',verbInf:'ändern'},
+    {template:'Warum {verb} {pronoun} das so?',verbInf:'machen'},
+    {template:'Sobald es klingelt, {verb} {pronoun} weiter.',verbInf:'lernen'},
+    {template:'Während alle feiern, {verb} {pronoun} noch.',verbInf:'lernen'},
+    {template:'Der Lehrer, der gut {verb}, ist beliebt.',verbInf:'lernen',pronounOverride:'er'},
+    {template:'Die Oma, die gern {verb}, macht Spaß.',verbInf:'kochen',pronounOverride:'sie_sg'},
+    {template:'Die Sportler, die hart {verb}, gewinnen oft.',verbInf:'üben',pronounOverride:'sie_pl'},
+    {template:'Wie lange {verb} {pronoun} auf den Bus?',verbInf:'warten'},
+    {template:'Warum {verb} {pronoun} so schwer?',verbInf:'atmen'},
+    {template:'Der Schüler, der schnell {verb}, ist fertig.',verbInf:'rechnen',pronounOverride:'er'},
+    {template:'Die Künstlerin, die schön {verb}, ist berühmt.',verbInf:'zeichnen',pronounOverride:'sie_sg'},
+    {template:'Obwohl es lange {verb}, bleiben alle.',verbInf:'dauern',pronounOverride:'es'}
+  ]
+};
+
+const encouragements = {
+  correct:['🎉 Super!','👏 Toll!','⭐ Perfekt!','🌟 Genau!','💪 Stark!','🏆 Spitze!','✨ Wunderbar!','🎯 Volltreffer!'],
+  incorrect:['💪 Nächstes Mal!','🤔 Fast!','📚 Nochmal!','🌱 Übung macht den Meister!','💡 Du schaffst das!'],
+  streak:['🔥 On fire!','⚡ Unaufhaltsam!','🚀 Rakete!','💫 Mega-Serie!','🏆 Champion!']
+};
+
+// ==================== GAME STATE ====================
+let gameState = {
+  currentModule:null,
+  practiceLevel:1,
+  practiceMaxLevel:5,
+  questions:[],
+  earnedPointsRun:0,
+  currentQuestionIndex:0,
+  score:0,
+  totalPoints:0,
+  correctAnswers:0,
+  totalCorrect:0,
+  streak:0,
+  longestStreak:0,
+  timerInterval:null,
+  timeRemaining:120,
+  startTime:null,
+  answered:false
+};
+
+// ==================== UTILITY ====================
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function getRandomItem(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function getRandomItems(arr,n){return shuffle(arr).slice(0,n);}
+
+// ==================== KONJUGATION ====================
+const VOWELS=new Set(['a','e','i','o','u','ä','ö','ü','y']);
+function endsWithSLike(stem){return/(s|ß|x|z)$/i.test(stem);}
+function needsEInsertion(stem){
+  if(/[td]$/i.test(stem))return true;
+  if(/[mn]$/i.test(stem)){const p=stem.slice(-2,-1).toLowerCase();if(p&&!VOWELS.has(p)&&p!=='l'&&p!=='r')return true;}
+  return false;
+}
+function analyzeVerb(inf){
+  const type=inf.endsWith('eln')?'eln':inf.endsWith('ern')?'ern':inf.endsWith('en')?'en':'n';
+  const baseStem=(type==='en')?inf.slice(0,-2):inf.slice(0,-1);
+  const pluralEnding=inf.endsWith('en')?'en':'n';
+  let ichStem=baseStem;
+  if(type==='eln'&&baseStem.endsWith('el'))ichStem=baseStem.slice(0,-2)+'l';
+  return{inf,type,baseStem,pluralEnding,ichStem};
+}
+
+const VERB_INFO=new Map();
+for(const v of verbs)VERB_INFO.set(v.infinitive,analyzeVerb(v.infinitive));
+
+function conjugate(inf,pronounKey){
+  const info=VERB_INFO.get(inf)||analyzeVerb(inf);
+  const stem=info.baseStem;
+  const eIns=needsEInsertion(stem);
+  if(pronounKey==='wir'||pronounKey==='sie_pl')return{form:stem+info.pluralEnding,stemUsed:stem,endingUsed:info.pluralEnding};
+  if(pronounKey==='ich'){
+    if(info.type==='eln')return{form:info.ichStem+'e',stemUsed:info.ichStem,endingUsed:'e'};
+    return{form:stem+'e',stemUsed:stem,endingUsed:'e'};
+  }
+  if(pronounKey==='du'){
+    if(eIns){const end=endsWithSLike(stem)?'et':'est';return{form:stem+end,stemUsed:stem,endingUsed:end};}
+    if(endsWithSLike(stem))return{form:stem+'t',stemUsed:stem,endingUsed:'t'};
+    return{form:stem+'st',stemUsed:stem,endingUsed:'st'};
+  }
+  if(pronounKey==='er'||pronounKey==='sie_sg'||pronounKey==='es'){
+    const end=eIns?'et':'t';return{form:stem+end,stemUsed:stem,endingUsed:end};
+  }
+  if(pronounKey==='ihr'){const end=eIns?'et':'t';return{form:stem+end,stemUsed:stem,endingUsed:end};}
+  return{form:stem+'e',stemUsed:stem,endingUsed:'e'};
+}
+
+function buildOptions(inf,correctPronounKey){
+  const correct=conjugate(inf,correctPronounKey).form;
+  const set=new Set([correct]);
+  const allKeys=shuffle(Array.from(PRONOUN_BY_KEY.keys()));
+  for(const k of allKeys){if(k===correctPronounKey)continue;if(set.size>=3)break;const f=conjugate(inf,k).form;if(!set.has(f))set.add(f);}
+  while(set.size<3)set.add(correct+' ');
+  return shuffle(Array.from(set)).slice(0,3);
+}
+
+// ==================== UI ====================
+function showScreen(id){document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
+function showMenu(){clearInterval(gameState.timerInterval);showScreen('menuScreen');updateStats();}
+function updateStats(){
+  document.getElementById('totalPoints').textContent=gameState.totalPoints;
+  document.getElementById('correctCount').textContent=gameState.totalCorrect;
+}
+function updateStreak(){
+  const d=document.getElementById('streakDisplay');
+  if(gameState.streak>=3){d.classList.remove('hidden');document.getElementById('streakCount').textContent=gameState.streak;}
+  else d.classList.add('hidden');
+}
+function updateLevelIndicator(){
+  for(let i=1;i<=5;i++){
+    const dot=document.getElementById('levelDot'+i);
+    dot.classList.remove('active','completed');
+    if(i<gameState.practiceLevel)dot.classList.add('completed');
+    else if(i===gameState.practiceLevel)dot.classList.add('active');
+  }
+}
+function createConfetti(){
+  const colors=['#FF6B6B','#4ECDC4','#FFE66D','#51CF66','#845EF7'];
+  for(let i=0;i<50;i++){
+    const c=document.createElement('div');c.className='confetti';
+    c.style.left=Math.random()*100+'vw';c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDelay=Math.random()*2+'s';c.style.width=(Math.random()*10+5)+'px';c.style.height=c.style.width;
+    document.body.appendChild(c);setTimeout(()=>c.remove(),3000);
+  }
+}
+function showLevelUp(title,subtitle='Du wirst immer besser!'){
+  const o=document.createElement('div');o.className='level-up-overlay';
+  o.innerHTML='<div class="level-up-card"><div class="level-up-icon">🎉</div><h2 class="level-up-title">'+title+'</h2><p style="margin-top:15px;font-size:1.2rem;">'+subtitle+'</p></div>';
+  document.body.appendChild(o);createConfetti();setTimeout(()=>o.remove(),2500);
+}
+
+// ==================== TUTORIAL ====================
+function showTutorialPage(n){
+  document.querySelectorAll('.tutorial-nav-btn').forEach((b,i)=>b.classList.toggle('active',i===n-1));
+  document.querySelectorAll('.tutorial-page').forEach((p,i)=>p.classList.toggle('active',i===n-1));
+}
+function checkStammUebung(id,correct){
+  const inp=document.getElementById(id);const v=inp.value.trim().toLowerCase();
+  inp.classList.toggle('correct',v===correct);inp.classList.toggle('incorrect',v!==correct);
+}
+function checkTutorialExercise(id,correct){
+  const inp=document.getElementById(id);const v=inp.value.trim().toLowerCase();
+  const fb=document.getElementById('feedback'+id.replace('uebung',''));
+  const ok=v===correct.toLowerCase();
+  inp.classList.toggle('correct',ok);inp.classList.toggle('incorrect',!ok);
+  if(fb){fb.textContent=ok?'✓ Richtig!':'✗ Nochmal!';fb.style.color=ok?'#2f9e44':'#e03131';}
+}
+
+// ==================== QUESTION GENERATION ====================
+function getPoolKeysForRun(){
+  if(gameState.currentModule==='challenge')return['easy','medium','hard'];
+  const lvl=gameState.practiceLevel;
+  if(lvl===1)return['easy'];
+  if(lvl===2)return['easy','medium'];
+  if(lvl===3)return['medium'];
+  if(lvl===4)return['medium','hard'];
+  return['hard'];
+}
+
+function generateQuestions(count){
+  gameState.questions=[];
+  const poolKeys=getPoolKeysForRun();
+  const templatesRaw=poolKeys.flatMap(k=>sentenceTemplates[k]||[]);
+  const templates=templatesRaw.filter(t=>VERB_BY_INF.has(t.verbInf));
+  const selected=getRandomItems(templates.length?templates:templatesRaw,Math.min(count,templates.length||count));
+  for(let i=0;i<count;i++){
+    const tmpl=selected[i%selected.length]||getRandomItem(selected);
+    const verbObj=VERB_BY_INF.get(tmpl.verbInf)||getRandomItem(verbs);
+    const inf=verbObj.infinitive;
+    const pronounKey=tmpl.pronounOverride||getRandomItem(RANDOM_PRONOUN_KEYS);
+    const pronounObj=PRONOUN_BY_KEY.get(pronounKey)||PRONOUN_BY_KEY.get('ich');
+    const conj=conjugate(inf,pronounKey);
+    const options=buildOptions(inf,pronounKey);
+    gameState.questions.push({
+      template:tmpl.template,pronounKey,pronoun:pronounObj.display,pronounPerson:pronounObj.person,
+      verbInfinitive:inf,correctForm:conj.form,options,stemUsed:conj.stemUsed,endingUsed:conj.endingUsed
+    });
+  }
+}
+
+// ==================== MODULES ====================
+function startModule(module){
+  gameState.currentModule=module;
+  gameState.currentQuestionIndex=0;
+  gameState.score=0;
+  gameState.correctAnswers=0;
+  gameState.streak=0;
+  gameState.longestStreak=0;
+  gameState.startTime=Date.now();
+  gameState.answered=false;
+  gameState.earnedPointsRun=0;
+
+  if(module==='tutorial'){showScreen('tutorialScreen');showTutorialPage(1);return;}
+
+  generateQuestions(10);
+  const levelInd=document.getElementById('levelIndicator');
+  const timerCont=document.getElementById('timerContainer');
+
+  if(module==='challenge'){
+    gameState.timeRemaining=120;startTimer();
+    timerCont.classList.remove('hidden');
+    levelInd.classList.add('hidden');
+  }else{
+    timerCont.classList.add('hidden');
+    levelInd.classList.remove('hidden');
+    updateLevelIndicator();
+  }
+  showScreen('gameScreen');showQuestion();
+}
+
+function capitalizeFirst(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+function pronounLabelForKey(k){
+  if(k==='sie_sg')return'sie (Einzahl)';
+  if(k==='sie_pl')return'sie (Mehrzahl)';
+  return(PRONOUN_BY_KEY.get(k)?.display)||'ich';
+}
+function pronounForSentence(tmpl,k){
+  const base=pronounLabelForKey(k);
+  return/^\s*\{pronoun\}/.test(tmpl)?capitalizeFirst(base):base;
+}
+
+function showQuestion(){
+  if(gameState.currentQuestionIndex>=gameState.questions.length){showResults();return;}
+  gameState.answered=false;
+  const q=gameState.questions[gameState.currentQuestionIndex];
+  const progress=(gameState.currentQuestionIndex/gameState.questions.length)*100;
+  document.getElementById('progressBar').style.width=progress+'%';
+  document.getElementById('currentQuestion').textContent=gameState.currentQuestionIndex+1;
+  document.getElementById('totalQuestions').textContent=gameState.questions.length;
+  const pronounInSentence=pronounForSentence(q.template,q.pronounKey);
+  const sentenceHTML=q.template.replace('{pronoun}','<strong>'+pronounInSentence+'</strong>').replace('{verb}','<span class="blank" id="blankSpace">___</span>');
+  document.getElementById('sentenceDisplay').innerHTML=sentenceHTML;
+  document.getElementById('pronounDisplay').textContent=pronounLabelForKey(q.pronounKey);
+  document.getElementById('optionsContainer').innerHTML=q.options.map(o=>'<button class="option-btn" onclick="checkAnswer(\''+o.replace(/'/g,"\\'")+'\')">'+o+'</button>').join('');
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('nextBtn').classList.add('hidden');
+}
+
+function checkAnswer(selected){
+  if(gameState.answered)return;
+  gameState.answered=true;
+  const q=gameState.questions[gameState.currentQuestionIndex];
+  const pronounLabel=pronounLabelForKey(q.pronounKey);
+  const isCorrect=selected===q.correctForm;
+  const buttons=document.querySelectorAll('.option-btn');
+  buttons.forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===q.correctForm)b.classList.add('correct');
+    else if(b.textContent===selected&&!isCorrect)b.classList.add('incorrect');
+  });
+  document.getElementById('blankSpace').textContent=q.correctForm;
+  document.getElementById('blankSpace').classList.add('filled');
+  const fb=document.getElementById('feedback');
+  fb.classList.remove('hidden','correct','incorrect');
+  if(isCorrect){
+    gameState.score++;gameState.correctAnswers++;gameState.totalCorrect++;gameState.streak++;
+    if(gameState.streak>gameState.longestStreak)gameState.longestStreak=gameState.streak;
+    const pts=gameState.streak>=3?15:10;
+    gameState.totalPoints+=pts;gameState.earnedPointsRun+=pts;
+    fb.classList.add('correct');
+    const enc=gameState.streak>=5?getRandomItem(encouragements.streak):getRandomItem(encouragements.correct);
+    fb.innerHTML='<span class="feedback-emoji">'+enc.split(' ')[0]+'</span>'+enc.split(' ').slice(1).join(' ')+'<div class="explanation"><strong>'+pronounLabel+'</strong> → Endung: <strong>-'+q.endingUsed+'</strong><br>'+q.stemUsed+' + '+q.endingUsed+' = <strong>'+q.correctForm+'</strong></div>';
+  }else{
+    gameState.streak=0;fb.classList.add('incorrect');
+    fb.innerHTML='<span class="feedback-emoji">🤔</span>'+getRandomItem(encouragements.incorrect)+'<div class="explanation"><strong>'+pronounLabel+'</strong> → Endung: <strong>-'+q.endingUsed+'</strong><br>Richtig: '+q.stemUsed+' + '+q.endingUsed+' = <strong>'+q.correctForm+'</strong></div>';
+  }
+  updateStats();updateStreak();
+  document.getElementById('nextBtn').classList.remove('hidden');
+}
+
+function nextQuestion(){gameState.currentQuestionIndex++;showQuestion();}
+
+// ==================== TIMER ====================
+function startTimer(){
+  clearInterval(gameState.timerInterval);updateTimerDisplay();
+  gameState.timerInterval=setInterval(()=>{
+    gameState.timeRemaining--;updateTimerDisplay();
+    if(gameState.timeRemaining<=0){clearInterval(gameState.timerInterval);showResults();}
+  },1000);
+}
+function updateTimerDisplay(){
+  const m=Math.floor(gameState.timeRemaining/60);const s=gameState.timeRemaining%60;
+  const t=document.getElementById('timer');
+  t.textContent='⏱️ '+m.toString().padStart(2,'0')+':'+s.toString().padStart(2,'0');
+  t.classList.toggle('warning',gameState.timeRemaining<=30);
+}
+
+// ==================== RESULTS ====================
+function showResults(){
+  clearInterval(gameState.timerInterval);showScreen('resultsScreen');
+  const pct=Math.round((gameState.correctAnswers/gameState.questions.length)*100);
+  const time=Math.round((Date.now()-gameState.startTime)/1000);
+  const mins=Math.floor(time/60);const secs=time%60;
+  document.getElementById('resultsScore').textContent=gameState.correctAnswers+'/'+gameState.questions.length;
+  document.getElementById('earnedPoints').textContent=gameState.earnedPointsRun;
+  document.getElementById('longestStreak').textContent=gameState.longestStreak;
+  document.getElementById('timeTaken').textContent=mins+':'+secs.toString().padStart(2,'0');
+  const starsC=document.getElementById('starsContainer');
+  const starCount=pct>=90?3:pct>=70?2:pct>=50?1:0;
+  starsC.innerHTML='';
+  for(let i=0;i<3;i++){const st=document.createElement('span');st.className='star'+(i>=starCount?' empty':'');st.textContent='⭐';starsC.appendChild(st);}
+  const msgs={excellent:['🎉 Fantastisch!','Du bist ein Verb-Meister!'],good:['👏 Sehr gut!','Tolle Fortschritte!'],okay:['💪 Gut!','Weiter so!'],needsPractice:['🌱 Guter Anfang!','Übung macht den Meister!']};
+  const key=pct>=90?'excellent':pct>=70?'good':pct>=50?'okay':'needsPractice';
+  document.getElementById('resultsTitle').textContent=msgs[key][0];
+  document.getElementById('resultsMessage').textContent=msgs[key][1];
+
+  // Level-Up im Übungsmodus
+  const nextLevelBtn=document.getElementById('nextLevelBtn');
+  nextLevelBtn.classList.add('hidden');
+  let leveledUp=false;
+  if(gameState.currentModule==='practice'&&pct>=70&&gameState.practiceLevel<gameState.practiceMaxLevel){
+    gameState.practiceLevel++;leveledUp=true;
+    nextLevelBtn.classList.remove('hidden');
+  }else if(gameState.currentModule==='practice'&&gameState.practiceLevel<gameState.practiceMaxLevel){
+    nextLevelBtn.classList.remove('hidden');
+    nextLevelBtn.textContent='Level '+gameState.practiceLevel+' wiederholen';
+  }
+  if(leveledUp)setTimeout(()=>showLevelUp('Level '+gameState.practiceLevel+'!','Nächstes Level = etwas schwerer 🙂'),400);
+  if(pct>=70)createConfetti();
+  updateStats();
+}
+
+function retryCurrentModule(){startModule(gameState.currentModule);}
+function nextLevel(){startModule('practice');}
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('verbGameProgress');
+  if(saved){const d=JSON.parse(saved);gameState.totalPoints=d.totalPoints||0;gameState.practiceLevel=d.practiceLevel||1;gameState.totalCorrect=d.totalCorrect||0;}
+  updateStats();
+});
+setInterval(()=>{localStorage.setItem('verbGameProgress',JSON.stringify({totalPoints:gameState.totalPoints,practiceLevel:gameState.practiceLevel,totalCorrect:gameState.totalCorrect}));},5000);
+</script>
+<!-- MINI-IMPRINT (safe corner) -->
+<button class="sbbz-legal-btn" id="sbbzLegalBtn" type="button" aria-label="Impressum öffnen">
+  ❗
+</button>
+
+<div class="sbbz-legal" id="sbbzLegal" aria-hidden="true">
+  <div class="sbbz-legal__panel" role="dialog" aria-modal="true" aria-label="Impressum und Datenschutz">
+    <button class="sbbz-legal__close" id="sbbzLegalClose" type="button" aria-label="Schließen">✕</button>
+
+    <div class="sbbz-legal__links">
+      <a href="https://www.sbbz.app/">Startseite</a>
+        <span aria-hidden="true">·</span>
+      <a href="https://www.sbbz.app/impressum.html">Impressum</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://www.sbbz.app/datenschutz.html">Datenschutz</a>
+    </div>
+
+    <div class="sbbz-legal__name">
+      <span id="sbbzLegalName">sbbz.app by Lukas Flad</span> · © <span id="sbbzYear"></span>
+    </div>
+  </div>
+</div>
+
+<style>
+/* ✅ Button: auffälliger + gut sichtbar */
+.sbbz-legal-btn{
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.96);
+  border: 2px solid rgba(0,0,0,.12);
+  color: rgba(0,0,0,.75);
+
+  display: grid;
+  place-items: center;
+
+  font: 800 16px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  z-index: 9999;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  box-shadow:
+    0 10px 26px rgba(0,0,0,.22),
+    0 0 0 4px rgba(255,255,255,.08);
+
+  opacity: .9;
+  transition: transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+  animation: sbbzLegalPulse 2.6s ease-in-out infinite;
+}
+
+.sbbz-legal-btn:hover{
+  transform: translateY(-1px) scale(1.03);
+  box-shadow:
+    0 14px 34px rgba(0,0,0,.28),
+    0 0 0 6px rgba(255,255,255,.10);
+}
+
+.sbbz-legal-btn:active{ transform: scale(.96); }
+
+@keyframes sbbzLegalPulse{
+  0%, 100% { box-shadow: 0 10px 26px rgba(0,0,0,.22), 0 0 0 4px rgba(255,255,255,.08); }
+  50%      { box-shadow: 0 12px 30px rgba(0,0,0,.26), 0 0 0 7px rgba(255,255,255,.12); }
+}
+
+/* --- Overlay (hidden by default) --- */
+.sbbz-legal{
+  position: fixed;
+  inset: 0;
+  display: none; /* off by default */
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px;
+  z-index: 10000;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(6px);
+}
+.sbbz-legal.is-open{ display: flex; }
+
+/* --- Minimal panel --- */
+.sbbz-legal__panel{
+  width: min(520px, 100%);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(10,10,18,.86);
+  color: rgba(255,255,255,.78);
+  padding: 14px 14px 12px;
+  position: relative;
+  box-shadow: 0 18px 60px rgba(0,0,0,.45);
+}
+
+.sbbz-legal__close{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.75);
+  cursor: pointer;
+  font: 700 14px/1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+.sbbz-legal__close:hover{ background: rgba(255,255,255,.10); }
+
+.sbbz-legal__links{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-top: 6px;
+}
+.sbbz-legal__links a{
+  color: rgba(255,255,255,.82);
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+.sbbz-legal__links a:hover{ text-decoration: underline; }
+
+.sbbz-legal__name{
+  margin-top: 6px;
+  text-align: center;
+  font: 12px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: rgba(255,255,255,.60);
+}
+</style>
+
+<script>
+  // year
+  document.getElementById("sbbzYear").textContent = new Date().getFullYear();
+
+  // open/close
+  const btn = document.getElementById("sbbzLegalBtn");
+  const overlay = document.getElementById("sbbzLegal");
+  const closeBtn = document.getElementById("sbbzLegalClose");
+
+  function openLegal(){
+    overlay.classList.add("is-open");
+    overlay.setAttribute("aria-hidden","false");
+  }
+  function closeLegal(){
+    overlay.classList.remove("is-open");
+    overlay.setAttribute("aria-hidden","true");
+  }
+
+  btn.addEventListener("click", openLegal);
+  closeBtn.addEventListener("click", closeLegal);
+
+  // click outside panel closes
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeLegal();
+  });
+
+  // ESC closes (desktop)
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("is-open")) closeLegal();
+  });
+</script>
+</html>
